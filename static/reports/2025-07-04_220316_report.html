@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FastChat 投票分析报告 - 2025-06-27 18:55:21</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <title>FastChat 累积投票分析报告 - 2025-07-04 22:03:17</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -60,7 +60,6 @@
             font-weight: bold;
             margin-bottom: 5px;
         }
-        .stat-number-date { font-size: 1.2em !important; }
         .stat-label {
             font-size: 0.9em;
             opacity: 0.9;
@@ -73,23 +72,22 @@
         }
         .chart-container {
             background: white;
-            padding: 10px;
+            padding: 15px;
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            height: 250px;
-            position: relative;
-            overflow: hidden;
-        }
-        .chart-container canvas {
-            max-height: 200px !important;
-            width: 100% !important;
+            text-align: center;
+            height: 400px;
         }
         .chart-title {
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 15px;
             color: #333;
-            font-size: 1em;
+            font-size: 1.1em;
             font-weight: 600;
+        }
+        .chart-container canvas {
+            max-width: 100%;
+            height: 350px !important;
         }
         .table-container {
             background: white;
@@ -164,13 +162,13 @@
         <div class="header">
             <h1>FastChat 投票分析报告</h1>
             <p>模型对战结果统计与ELO排名分析</p>
-            <p style="font-size: 0.9em; margin-top: 10px;">生成时间: 2025-06-27 18:55:21</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">生成时间: 2025-07-04 22:03:17</p>
         </div>
         <div class="content">
             <!-- 统计概览 -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number">18</div>
+                    <div class="stat-number">25</div>
                     <div class="stat-label">总投票数</div>
                 </div>
                 <div class="stat-card">
@@ -178,11 +176,11 @@
                     <div class="stat-label">参与模型数</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">9</div>
+                    <div class="stat-number">21</div>
                     <div class="stat-label">有效对战数</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number stat-number-date">2025-06-27</div>
+                    <div class="stat-number">2025-07-04</div>
                     <div class="stat-label">分析日期</div>
                 </div>
             </div>
@@ -190,16 +188,16 @@
             <div class="charts-grid">
                 <div class="chart-container">
                     <div class="chart-title">投票类型分布</div>
-                    <canvas id="voteTypeChart"></canvas>
+                    <canvas id="voteDistributionChart" width="400" height="350"></canvas>
                 </div>
                 <div class="chart-container">
                     <div class="chart-title">模型胜率对比</div>
-                    <canvas id="winRateChart"></canvas>
+                    <canvas id="modelWinRateChart" width="400" height="350"></canvas>
                 </div>
             </div>
             <!-- ELO排名表格 -->
             <div class="table-container">
-                <div class="chart-title">ELO排名表</div>
+                <div class="table-title">ELO排名表</div>
                 <table id="eloTable">
                     <thead>
                         <tr>
@@ -214,26 +212,25 @@
                         </tr>
                     </thead>
                     <tbody>
-
                         <tr>
                             <td>1</td>
                             <td class="winner">HKGAI-V1</td>
-                            <td class="winner">1080.0</td>
-                            <td>9</td>
-                            <td class="winner">8</td>
+                            <td class="winner">1027.0</td>
+                            <td>7</td>
+                            <td class="winner">3</td>
                             <td class="loser">1</td>
-                            <td class="tie">0</td>
-                            <td class="winner">88.90%%</td>
+                            <td class="tie">3</td>
+                            <td class="winner">42.90%</td>
                         </tr>
                         <tr>
                             <td>2</td>
                             <td class="">HKGAI-V1-Thinking</td>
-                            <td class="">920.0</td>
-                            <td>9</td>
+                            <td class="">973.0</td>
+                            <td>7</td>
                             <td class="winner">1</td>
-                            <td class="loser">8</td>
-                            <td class="tie">0</td>
-                            <td class="">11.10%%</td>
+                            <td class="loser">3</td>
+                            <td class="tie">3</td>
+                            <td class="">14.30%</td>
                         </tr>
                     </tbody>
                 </table>
@@ -241,7 +238,7 @@
 
             <!-- 详细统计表格 -->
             <div class="table-container">
-                <div class="chart-title">详细统计表</div>
+                <div class="table-title">详细统计表</div>
                 <table id="detailTable">
                     <thead>
                         <tr>
@@ -259,30 +256,30 @@
 
                         <tr>
                             <td class="winner">HKGAI-V1</td>
-                            <td>9</td>
-                            <td class="winner">8</td>
-                            <td class="loser">1</td>
-                            <td class="tie">0</td>
-                            <td class="winner">88.89%%</td>
-                            <td class="tie">0.00%%</td>
-                            <td class="loser">11.11%%</td>
+                            <td>25</td>
+                            <td class="winner">14</td>
+                            <td class="loser">5</td>
+                            <td class="tie">6</td>
+                            <td class="winner">56.00%</td>
+                            <td class="tie">24.00%</td>
+                            <td class="loser">20.00%</td>
                         </tr>
                         <tr>
-                            <td class="">HKGAI-V1-Thinking</td>
-                            <td>9</td>
-                            <td class="winner">1</td>
-                            <td class="loser">8</td>
-                            <td class="tie">0</td>
-                            <td class="winner">11.11%%</td>
-                            <td class="tie">0.00%%</td>
-                            <td class="loser">88.89%%</td>
+                            <td class="winner">HKGAI-V1-Thinking</td>
+                            <td>25</td>
+                            <td class="winner">5</td>
+                            <td class="loser">14</td>
+                            <td class="tie">6</td>
+                            <td class="winner">20.00%</td>
+                            <td class="tie">24.00%</td>
+                            <td class="loser">56.00%</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="footer">
-                <p>Report Generated: 2025-06-27 18:55:21 | Data Source: FastChat Arena Voting System</p>
+                <p>Report Generated: 2025-07-04 22:03:17 | Data Source: FastChat Arena Voting System</p>
                 <p>ELO Rating System | K-Factor: 32 | Confidence Interval: 95%</p>
                 <p>This report is automatically generated and supports scheduled updates</p>
             </div>
@@ -291,143 +288,108 @@
 
     <script>
         // 图表数据
-        const voteDistributionData = {
-            leftvote: 4,
-            rightvote: 5,
-            tievote: 0
+        const voteData = {
+            labels: ['Left Wins', 'Right Wins', 'Ties'],
+            datasets: [{
+                data: [12, 7, 2],
+                backgroundColor: ['#28a745', '#dc3545', '#ffc107'],
+                borderColor: ['#28a745', '#dc3545', '#ffc107'],
+                borderWidth: 2
+            }]
         };
-        
+
         const modelData = {
-            labels: ["HKGAI-V1", "HKGAI-V1-Thinking"],
-            winRates: [88.89, 11.11],
-            barColors: ["rgba(40, 167, 69, 0.8)", "rgba(102, 126, 234, 0.8)"],
-            borderColors: ["rgba(40, 167, 69, 1)", "rgba(102, 126, 234, 1)"]
+            labels: ['HKGAI-V1', 'HKGAI-V1-Thinking'],
+            winRates: [56.0, 20.0],
+            barColors: ['#1976D2', '#63A4FF'],
+            borderColors: ['#1976D2', '#63A4FF']
         };
-        
-        // 等待页面完全加载后初始化图表
+
+        // 页面加载完成后初始化图表
         window.addEventListener('load', function() {
-            setTimeout(function() {
-                initCharts();
-            }, 500);
-        });
-        
-        // 如果页面已经加载完成，立即初始化
-        if (document.readyState === 'complete') {
-            setTimeout(function() {
-                initCharts();
-            }, 500);
-        }
-        
-        function initCharts() {
-            try {
-                console.log('开始初始化图表...');
-                
-                // 检查Chart.js是否可用
-                if (typeof Chart === 'undefined') {
-                    console.error('Chart.js 未加载');
-                    return;
-                }
-                
-                // 初始化投票类型分布图表
-                const voteCanvas = document.getElementById('voteTypeChart');
-                if (voteCanvas) {
-                    const voteCtx = voteCanvas.getContext('2d');
-                    new Chart(voteCtx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: ['左方获胜', '右方获胜', '平局'],
-                            datasets: [{
-                                data: [voteDistributionData.leftvote, voteDistributionData.rightvote, voteDistributionData.tievote],
-                                backgroundColor: ['#28a745', '#dc3545', '#ffc107'],
-                                borderWidth: 2,
-                                borderColor: '#fff'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            animation: {
-                                duration: 1000
+            // 投票分布饼图
+            const pieCtx = document.getElementById('voteDistributionChart');
+            if (pieCtx && typeof Chart !== 'undefined') {
+                new Chart(pieCtx, {
+                    type: 'pie',
+                    data: voteData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    font: {
+                                        size: 14
+                                    }
+                                }
                             },
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    labels: {
-                                        padding: 10,
-                                        usePointStyle: true
+                            tooltip: {
+                                backgroundColor: 'rgba(0,0,0,0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: '#fff',
+                                borderWidth: 1,
+                                callbacks: {
+                                    label: function(context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((context.parsed * 100) / total).toFixed(1);
+                                        return context.label + ': ' + context.parsed + ' (' + percentage + '%)';
                                     }
                                 }
                             }
                         }
-                    });
-                    console.log('投票类型分布图表初始化成功');
-                } else {
-                    console.error('找不到投票类型图表canvas元素');
-                }
-                
-                // 初始化模型胜率对比图表
-                const winRateCanvas = document.getElementById('winRateChart');
-                if (winRateCanvas) {
-                    const winRateCtx = winRateCanvas.getContext('2d');
-                    new Chart(winRateCtx, {
-                        type: 'bar',
-                        data: {
-                            labels: modelData.labels,
-                            datasets: [{
-                                label: '胜率 (%)',
-                                data: modelData.winRates,
-                                backgroundColor: modelData.barColors,
-                                borderColor: modelData.borderColors,
-                                borderWidth: 2
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            animation: {
-                                duration: 1500
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    max: 100,
-                                    ticks: {
-                                        callback: function(value) {
-                                            return value + '%';
-                                        }
-                                    }
-                                }
-                            },
-                            plugins: {
-                                legend: {
-                                    display: false
-                                }
-                            }
-                        }
-                    });
-                    console.log('模型胜率对比图表初始化成功');
-                } else {
-                    console.error('找不到胜率对比图表canvas元素');
-                }
-                
-            } catch (error) {
-                console.error('图表初始化错误:', error);
+                    }
+                });
             }
-        }
-        
-        // 表格悬停效果
-        document.addEventListener('DOMContentLoaded', function() {
-            const tableRows = document.querySelectorAll('tbody tr');
-            tableRows.forEach(row => {
-                row.addEventListener('mouseenter', function() {
-                    this.style.transform = 'scale(1.02)';
-                    this.style.transition = 'transform 0.2s ease';
+
+            // 模型胜率柱状图
+            const barCtx = document.getElementById('modelWinRateChart');
+            if (barCtx && typeof Chart !== 'undefined') {
+                new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: modelData.labels,
+                        datasets: [{
+                            label: 'Win Rate (%)',
+                            data: modelData.winRates,
+                            backgroundColor: modelData.barColors,
+                            borderColor: modelData.borderColors,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0,0,0,0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: '#fff',
+                                borderWidth: 1
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
                 });
-                
-                row.addEventListener('mouseleave', function() {
-                    this.style.transform = 'scale(1)';
-                });
-            });
+            }
         });
     </script>
 </body>

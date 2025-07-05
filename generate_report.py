@@ -581,6 +581,8 @@ def create_report_html(data_source, vote_rows, elo_rows, distribution_data):
             color: white !important;
         }}
         
+        .stat-number-date { font-size: 1.2em !important; }
+        
         .charts-grid {{
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -953,7 +955,7 @@ def create_report_html(data_source, vote_rows, elo_rows, distribution_data):
                     <div class="stat-label">有效对战数</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">{timestamp.split()[0]}</div>
+                    <div class="stat-number stat-number-date">{timestamp.split()[0]}</div>
                     <div class="stat-label">分析日期</div>
                 </div>
             </div>
