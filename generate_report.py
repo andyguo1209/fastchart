@@ -289,21 +289,51 @@ def analyze_cumulative_vote_data():
     main_dir = Path(__file__).parent.resolve()
     logs_archive_dir = main_dir / 'logs_archive'
     
-    if not logs_archive_dir.exists():
-        print(t('logs_archive_not_found').format(logs_archive_dir))
+    # 收集所有日志文件
+    all_log_files = []
+    
+    # 1. 从logs_archive目录获取历史日志文件
+    if logs_archive_dir.exists():
+        archive_files = list(logs_archive_dir.glob('*.json'))
+        all_log_files.extend(archive_files)
+        print(f"Found {len(archive_files)} archived log files in {logs_archive_dir}")
+    else:
+        print(f"⚠️  Archive directory not found: {logs_archive_dir}")
+    
+    # 2. 从根目录获取最新日志文件（包含当前数据）
+    root_log_files = list(main_dir.glob('*-conv.json'))
+    if root_log_files:
+        print(f"Found {len(root_log_files)} current log files in root directory")
+        for root_file in root_log_files:
+            # 检查是否已经在archive中存在相同的文件
+            archive_equivalent = logs_archive_dir / root_file.name if logs_archive_dir.exists() else None
+            if not archive_equivalent or not archive_equivalent.exists():
+                all_log_files.append(root_file)
+                print(f"  + Including current log: {root_file.name}")
+            else:
+                # 比较文件大小和修改时间，使用更新的文件
+                root_mtime = root_file.stat().st_mtime
+                archive_mtime = archive_equivalent.stat().st_mtime
+                root_size = root_file.stat().st_size
+                archive_size = archive_equivalent.stat().st_size
+                
+                if root_mtime > archive_mtime or root_size != archive_size:
+                    # 根目录的文件更新，替换archive中的文件
+                    all_log_files = [f for f in all_log_files if f.name != root_file.name]
+                    all_log_files.append(root_file)
+                    print(f"  + Using newer current log: {root_file.name} (newer than archived version)")
+                else:
+                    print(f"  - Skipping current log: {root_file.name} (same as archived version)")
+    
+    if not all_log_files:
+        print("❌ No log files found in either logs_archive or root directory")
         return [], [], {}
     
-    # 获取所有历史日志文件
-    log_files = list(logs_archive_dir.glob('*.json'))
-    if not log_files:
-        print(t('no_historical_logs').format(logs_archive_dir))
-        return [], [], {}
-    
-    # 按日期排序
-    log_files.sort()
-    print(f"Found {len(log_files)} historical log files:")
-    for log_file in log_files:
-        print(f"  - {log_file.name}")
+    # 按文件名排序（通常对应日期）
+    all_log_files.sort(key=lambda x: x.name)
+    print(f"\n📊 Total log files to process: {len(all_log_files)}")
+    for log_file in all_log_files:
+        print(f"  - {log_file.name} ({log_file.parent.name if log_file.parent.name != main_dir.name else 'root'})")
     
     # 创建临时合并文件
     temp_merged_file = main_dir / 'temp_merged_logs.json'
@@ -311,13 +341,17 @@ def analyze_cumulative_vote_data():
     try:
         # 合并所有日志文件
         with open(temp_merged_file, 'w', encoding='utf-8') as merged_file:
-            for log_file in log_files:
+            for log_file in all_log_files:
                 print(f"Processing {log_file.name}...")
-                with open(log_file, 'r', encoding='utf-8') as f:
-                    for line in f:
-                        merged_file.write(line)
+                try:
+                    with open(log_file, 'r', encoding='utf-8') as f:
+                        for line in f:
+                            merged_file.write(line)
+                except Exception as e:
+                    print(f"⚠️  Error processing {log_file.name}: {e}")
+                    continue
         
-        print(f"Merged {len(log_files)} files into {temp_merged_file}")
+        print(f"Merged {len(all_log_files)} files into {temp_merged_file}")
         
         # 运行投票分析
         cmd = f"python {main_dir}/vote_analysis.py --log-file {temp_merged_file} --export"
