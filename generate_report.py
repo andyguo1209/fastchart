@@ -554,7 +554,7 @@ def create_report_html(data_source, vote_rows, elo_rows, distribution_data):
         
         .stats-grid {{
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(4, 1fr); /* 固定4列，防止换行 */
             gap: 15px;
             margin-bottom: 20px;
         }}
@@ -569,7 +569,7 @@ def create_report_html(data_source, vote_rows, elo_rows, distribution_data):
         }}
         
         .stat-number {{
-            font-size: 2em;
+            font-size: clamp(1.2em, 2vw, 2em); /* 内容自适应缩放，防止溢出换行 */
             font-weight: bold;
             margin-bottom: 5px;
             color: white !important;
@@ -581,7 +581,17 @@ def create_report_html(data_source, vote_rows, elo_rows, distribution_data):
             color: white !important;
         }}
         
-        .stat-number-date { font-size: 1.2em !important; }
+        .stat-number-date, .stat-number {{
+            font-size: 2em !important;
+            font-weight: bold;
+            color: white !important;
+        }}
+        .stat-card {{
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }}
         
         .charts-grid {{
             display: grid;
@@ -929,6 +939,15 @@ def create_report_html(data_source, vote_rows, elo_rows, distribution_data):
                 font-size: 2em;
             }}
         }}
+        
+        .stat-number-date {{
+            font-size: 1.1em !important;
+            max-width: 90px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin: 0 auto;
+        }}
     </style>
 </head>
 <body>
@@ -955,7 +974,7 @@ def create_report_html(data_source, vote_rows, elo_rows, distribution_data):
                     <div class="stat-label">有效对战数</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number stat-number-date">{timestamp.split()[0]}</div>
+                    <div class="stat-number">{timestamp.split()[0]}</div>
                     <div class="stat-label">分析日期</div>
                 </div>
             </div>
