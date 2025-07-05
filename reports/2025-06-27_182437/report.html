@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastChat 投票分析报告 - 2025-06-27 18:24:37</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            background: white;
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+        }
+        .chart-container canvas {
+            max-height: 200px !important;
+            width: 100% !important;
+        }
+        .chart-title {
+            text-align: center;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1em;
+            font-weight: 600;
+        }
+        .table-container {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+        .table-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        td {
+            font-size: 0.9em;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .winner {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .loser {
+            color: #dc3545;
+        }
+        .tie {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .footer {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>FastChat 投票分析报告</h1>
+            <p>模型对战结果统计与ELO排名分析</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">生成时间: 2025-06-27 18:24:37</p>
+        </div>
+        <div class="content">
+            <!-- 统计概览 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">18</div>
+                    <div class="stat-label">总投票数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">参与模型数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">有效对战数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2025-06-27</div>
+                    <div class="stat-label">分析日期</div>
+                </div>
+            </div>
+            <!-- 图表区域 -->
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <div class="chart-title">投票类型分布</div>
+                    <canvas id="voteTypeChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">模型胜率对比</div>
+                    <canvas id="winRateChart"></canvas>
+                </div>
+            </div>
+            <!-- ELO排名表格 -->
+            <div class="table-container">
+                <div class="chart-title">ELO排名表</div>
+                <table id="eloTable">
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>模型名称</th>
+                            <th>ELO评分</th>
+                            <th>总对战</th>
+                            <th>胜利</th>
+                            <th>失败</th>
+                            <th>平局</th>
+                            <th>胜率</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>1</td>
+                            <td class="winner">HKGAI-V1</td>
+                            <td class="winner">1080.0</td>
+                            <td>9</td>
+                            <td class="winner">8</td>
+                            <td class="loser">1</td>
+                            <td class="tie">0</td>
+                            <td class="winner">88.90%%</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td class="">HKGAI-V1-Thinking</td>
+                            <td class="">920.0</td>
+                            <td>9</td>
+                            <td class="winner">1</td>
+                            <td class="loser">8</td>
+                            <td class="tie">0</td>
+                            <td class="">11.10%%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 详细统计表格 -->
+            <div class="table-container">
+                <div class="chart-title">详细统计表</div>
+                <table id="detailTable">
+                    <thead>
+                        <tr>
+                            <th>模型名称</th>
+                            <th>总对战</th>
+                            <th>胜利</th>
+                            <th>失败</th>
+                            <th>平局</th>
+                            <th>胜率</th>
+                            <th>平局率</th>
+                            <th>失败率</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="winner">HKGAI-V1</td>
+                            <td>9</td>
+                            <td class="winner">8</td>
+                            <td class="loser">1</td>
+                            <td class="tie">0</td>
+                            <td class="winner">88.89%%</td>
+                            <td class="tie">0.00%%</td>
+                            <td class="loser">11.11%%</td>
+                        </tr>
+                        <tr>
+                            <td class="">HKGAI-V1-Thinking</td>
+                            <td>9</td>
+                            <td class="winner">1</td>
+                            <td class="loser">8</td>
+                            <td class="tie">0</td>
+                            <td class="winner">11.11%%</td>
+                            <td class="tie">0.00%%</td>
+                            <td class="loser">88.89%%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>Report Generated: 2025-06-27 18:24:37 | Data Source: FastChat Arena Voting System</p>
+                <p>ELO Rating System | K-Factor: 32 | Confidence Interval: 95%</p>
+                <p>This report is automatically generated and supports scheduled updates</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 图表数据
+        const voteDistributionData = {
+            leftvote: 4,
+            rightvote: 5,
+            tievote: 0
+        };
+        
+        const modelData = {
+            labels: ["HKGAI-V1", "HKGAI-V1-Thinking"],
+            winRates: [88.89, 11.11],
+            barColors: ["rgba(40, 167, 69, 0.8)", "rgba(102, 126, 234, 0.8)"],
+            borderColors: ["rgba(40, 167, 69, 1)", "rgba(102, 126, 234, 1)"]
+        };
+        
+        // 等待页面完全加载后初始化图表
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                initCharts();
+            }, 500);
+        });
+        
+        // 如果页面已经加载完成，立即初始化
+        if (document.readyState === 'complete') {
+            setTimeout(function() {
+                initCharts();
+            }, 500);
+        }
+        
+        function initCharts() {
+            try {
+                console.log('开始初始化图表...');
+                
+                // 检查Chart.js是否可用
+                if (typeof Chart === 'undefined') {
+                    console.error('Chart.js 未加载');
+                    return;
+                }
+                
+                // 初始化投票类型分布图表
+                const voteCanvas = document.getElementById('voteTypeChart');
+                if (voteCanvas) {
+                    const voteCtx = voteCanvas.getContext('2d');
+                    new Chart(voteCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['左方获胜', '右方获胜', '平局'],
+                            datasets: [{
+                                data: [voteDistributionData.leftvote, voteDistributionData.rightvote, voteDistributionData.tievote],
+                                backgroundColor: ['#28a745', '#dc3545', '#ffc107'],
+                                borderWidth: 2,
+                                borderColor: '#fff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: {
+                                duration: 1000
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        padding: 10,
+                                        usePointStyle: true
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    console.log('投票类型分布图表初始化成功');
+                } else {
+                    console.error('找不到投票类型图表canvas元素');
+                }
+                
+                // 初始化模型胜率对比图表
+                const winRateCanvas = document.getElementById('winRateChart');
+                if (winRateCanvas) {
+                    const winRateCtx = winRateCanvas.getContext('2d');
+                    new Chart(winRateCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: modelData.labels,
+                            datasets: [{
+                                label: '胜率 (%)',
+                                data: modelData.winRates,
+                                backgroundColor: modelData.barColors,
+                                borderColor: modelData.borderColors,
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: {
+                                duration: 1500
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return value + '%';
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                    console.log('模型胜率对比图表初始化成功');
+                } else {
+                    console.error('找不到胜率对比图表canvas元素');
+                }
+                
+            } catch (error) {
+                console.error('图表初始化错误:', error);
+            }
+        }
+        
+        // 表格悬停效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

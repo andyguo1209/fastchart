@@ -676,6 +676,31 @@ block_css = """
     font-size: 90% !important;
 }
 
+/* HKGAI Branding Styles */
+#notice_markdown h1 {
+    color: #1976D2;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+#notice_markdown h2 {
+    color: var(--body-text-color);
+    text-align: center;
+    font-weight: 600;
+}
+
+.hkgai-header {
+    background: var(--background-fill-primary);
+    border: 1px solid var(--border-color-primary);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
 .sponsor-image-about img {
     margin: 0 20px;
     margin-top: 20px;
@@ -744,83 +769,34 @@ a:hover {
 }
 """
 
-
-# block_css = """
-# #notice_markdown .prose {
-#     font-size: 110% !important;
-# }
-# #notice_markdown th {
-#     display: none;
-# }
-# #notice_markdown td {
-#     padding-top: 6px;
-#     padding-bottom: 6px;
-# }
-# #arena_leaderboard_dataframe table {
-#     font-size: 110%;
-# }
-# #full_leaderboard_dataframe table {
-#     font-size: 110%;
-# }
-# #model_description_markdown {
-#     font-size: 110% !important;
-# }
-# #leaderboard_markdown .prose {
-#     font-size: 110% !important;
-# }
-# #leaderboard_markdown td {
-#     padding-top: 6px;
-#     padding-bottom: 6px;
-# }
-# #leaderboard_dataframe td {
-#     line-height: 0.1em;
-# }
-# #about_markdown .prose {
-#     font-size: 110% !important;
-# }
-# #ack_markdown .prose {
-#     font-size: 110% !important;
-# }
-# #chatbot .prose {
-#     font-size: 105% !important;
-# }
-# .sponsor-image-about img {
-#     margin: 0 20px;
-#     margin-top: 20px;
-#     height: 40px;
-#     max-height: 100%;
-#     width: auto;
-#     float: left;
-# }
-
-# body {
-#     --body-text-size: 14px;
-# }
-
-# .chatbot h1, h2, h3 {
-#     margin-top: 8px; /* Adjust the value as needed */
-#     margin-bottom: 0px; /* Adjust the value as needed */
-#     padding-bottom: 0px;
-# }
-
-# .chatbot h1 {
-#     font-size: 130%;
-# }
-# .chatbot h2 {
-#     font-size: 120%;
-# }
-# .chatbot h3 {
-#     font-size: 110%;
-# }
-# .chatbot p:not(:first-child) {
-#     margin-top: 8px;
-# }
-
-# .typing {
-#     display: inline-block;
-# }
-
-# """
+# JavaScript to force dark mode on page load
+dark_mode_js = """
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for Gradio to load
+    setTimeout(function() {
+        // Try to find and click the dark mode toggle button
+        const darkModeButton = document.querySelector('button[aria-label="Dark mode"]') || 
+                             document.querySelector('button[title="Dark mode"]') ||
+                             document.querySelector('button[data-testid="theme-toggle"]') ||
+                             document.querySelector('.theme-toggle') ||
+                             document.querySelector('[data-theme-toggle]');
+        
+        if (darkModeButton) {
+            // Check if we're not already in dark mode
+            if (!document.documentElement.classList.contains('dark') && 
+                !document.body.classList.contains('dark')) {
+                darkModeButton.click();
+            }
+        } else {
+            // Fallback: manually add dark mode class
+            document.documentElement.classList.add('dark');
+            document.body.classList.add('dark');
+        }
+    }, 1000);
+});
+</script>
+"""
 
 
 def get_model_description_md(models):
@@ -885,21 +861,11 @@ We also thank [UC Berkeley SkyLab](https://sky.cs.berkeley.edu/), [Kaggle](https
 
 
 def build_single_model_ui(models, add_promotion_links=False):
-    promotion = (
-        f"""
-[Blog](https://blog.lmarena.ai/blog/2023/arena/) | [GitHub](https://github.com/lm-sys/FastChat) | [Paper](https://arxiv.org/abs/2403.04132) | [Dataset](https://github.com/lm-sys/FastChat/blob/main/docs/dataset_release.md) | [Twitter](https://twitter.com/lmsysorg) | [Discord](https://discord.gg/6GXcFg3TH8) | [Kaggle Competition](https://www.kaggle.com/competitions/lmsys-chatbot-arena)
-
-{SURVEY_LINK}
-
-## 👇 Choose any model to chat
-"""
-        if add_promotion_links
-        else ""
-    )
-
     notice_markdown = f"""
-# 🏔️ Chatbot Arena (formerly LMSYS): Free AI Chat to Compare & Test Best AI Chatbots
-{promotion}
+<div class="hkgai-header">
+    <h1>🚀 HKGAI 智能对话平台</h1>
+    <h2>👇 开始聊天！</h2>
+</div>
 """
 
     state = gr.State()
@@ -914,13 +880,6 @@ def build_single_model_ui(models, add_promotion_links=False):
                 show_label=False,
                 container=False,
             )
-        with gr.Row():
-            with gr.Accordion(
-                f"🔍 Expand to see the descriptions of {len(models)} models",
-                open=False,
-            ):
-                model_description_md = get_model_description_md(models)
-                gr.Markdown(model_description_md, elem_id="model_description_markdown")
 
         chatbot = gr.Chatbot(
             elem_id="chatbot",
@@ -937,26 +896,27 @@ def build_single_model_ui(models, add_promotion_links=False):
     with gr.Row():
         textbox = gr.Textbox(
             show_label=False,
-            placeholder="👉 Enter your prompt and press ENTER",
+            placeholder="👉 请输入您的问题并按回车键",
             elem_id="input_box",
         )
-        send_btn = gr.Button(value="Send", variant="primary", scale=0)
+        send_btn = gr.Button(value="发送", variant="primary", scale=0)
 
     with gr.Row() as button_row:
-        upvote_btn = gr.Button(value="👍  Upvote", interactive=False)
-        downvote_btn = gr.Button(value="👎  Downvote", interactive=False)
-        flag_btn = gr.Button(value="⚠️  Flag", interactive=False)
-        regenerate_btn = gr.Button(value="🔄  Regenerate", interactive=False)
-        clear_btn = gr.Button(value="🗑️  Clear history", interactive=False)
+        # Hide voting buttons to keep interface clean
+        upvote_btn = gr.Button(value="👍  赞", interactive=False, visible=False)
+        downvote_btn = gr.Button(value="👎  踩", interactive=False, visible=False)
+        flag_btn = gr.Button(value="⚠️  举报", interactive=False, visible=False)
+        regenerate_btn = gr.Button(value="🔄  重新生成", interactive=False)
+        clear_btn = gr.Button(value="🗑️  清除历史", interactive=False)
 
-    with gr.Accordion("Parameters", open=False) as parameter_row:
+    with gr.Accordion("Parameters", open=False, visible=False) as parameter_row:
         temperature = gr.Slider(
             minimum=0.0,
             maximum=1.0,
             value=0.7,
             step=0.1,
             interactive=True,
-            label="Temperature",
+            label="温度",
         )
         top_p = gr.Slider(
             minimum=0.0,
@@ -972,11 +932,8 @@ def build_single_model_ui(models, add_promotion_links=False):
             value=1024,
             step=64,
             interactive=True,
-            label="Max output tokens",
+            label="最大输出长度",
         )
-
-    if add_promotion_links:
-        gr.Markdown(acknowledgment_md, elem_id="ack_markdown")
 
     # Register listeners
     btn_list = [upvote_btn, downvote_btn, flag_btn, regenerate_btn, clear_btn]
@@ -1028,9 +985,22 @@ def build_single_model_ui(models, add_promotion_links=False):
 
 def build_demo(models):
     with gr.Blocks(
-        title="Chatbot Arena (formerly LMSYS): Free AI Chat to Compare & Test Best AI Chatbots",
-        theme=gr.themes.Default(),
+        title="HKGAI 智能对话平台",
+        theme=gr.themes.Soft(text_size=gr.themes.sizes.text_lg).set(
+            body_background_fill="*neutral_950",
+            body_text_color="*neutral_50",
+            button_primary_background_fill="*primary_600",
+            button_primary_text_color="white",
+            button_secondary_background_fill="*neutral_800",
+            button_secondary_text_color="*neutral_50",
+            block_background_fill="*neutral_900",
+            block_border_color="*neutral_700",
+            input_background_fill="*neutral_800",
+            panel_background_fill="*neutral_900",
+            panel_border_color="*neutral_700",
+        ),
         css=block_css,
+        head=dark_mode_js,
     ) as demo:
         url_params = gr.JSON(visible=False)
 

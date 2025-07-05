@@ -1116,7 +1116,20 @@ def build_demo(elo_results_file, leaderboard_table_file, arena_hard_leaderboard)
 
     with gr.Blocks(
         title="Chatbot Arena Leaderboard",
-        theme=gr.themes.Default(text_size=text_size),
+        theme=gr.themes.Default(text_size=text_size).set(
+            body_background_fill="*neutral_950",
+            body_text_color="*neutral_50",
+            button_primary_background_fill="*primary_500",
+            button_primary_text_color="white",
+            button_secondary_background_fill="*neutral_800",
+            button_secondary_text_color="*neutral_50",
+            block_background_fill="*neutral_900",
+            block_border_color="*neutral_700",
+            input_background_fill="*neutral_800",
+            input_text_color="*neutral_50",
+            panel_background_fill="*neutral_900",
+            panel_border_color="*neutral_700"
+        ),
         css=block_css,
     ) as demo:
         with gr.Tabs() as tabs:

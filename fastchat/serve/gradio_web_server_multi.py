@@ -27,6 +27,7 @@ from fastchat.serve.gradio_block_arena_vision_named import (
     build_side_by_side_vision_ui_named,
     load_demo_side_by_side_vision_named,
 )
+from fastchat.serve.gradio_block_reports import build_reports_tab
 from fastchat.serve.gradio_global_state import Context
 
 from fastchat.serve.gradio_web_server import (
@@ -52,30 +53,30 @@ logger = build_logger("gradio_web_server_multi", "gradio_web_server_multi.log")
 
 def build_visualizer():
     visualizer_markdown = """
-    # 🔍 Arena Visualizer
-    Arena visualizer provides interactive tools to explore and draw insights from our leaderboard data. 
+    # 🔍 竞技场可视化
+    竞技场可视化提供交互式工具来探索和分析我们的排行榜数据。
     """
     gr.Markdown(visualizer_markdown, elem_id="visualizer_markdown")
     with gr.Tabs():
-        with gr.Tab("Topic Explorer", id=0):
+        with gr.Tab("主题浏览器", id=0):
             topic_markdown = """ 
-            This tool provides an interactive way to explore how people are using Chatbot Arena. 
-            Using *[topic clustering](https://github.com/MaartenGr/BERTopic)*, we organized user-submitted prompts from Arena battles into broad and specific categories. 
-            Dive in to uncover insights about the distribution and themes of these prompts! """
+            这个工具提供了一个交互式的方式来探索人们如何使用聊天机器人竞技场。
+            使用 *[主题聚类](https://github.com/MaartenGr/BERTopic)*，我们将用户在竞技场对战中提交的提示组织成广泛和具体的类别。
+            深入探索以发现这些提示的分布和主题洞察！ """
             gr.Markdown(topic_markdown)
             expandText = (
-                "👇 Expand to see detailed instructions on how to use the visualizer"
+                "👇 展开查看如何使用可视化器的详细说明"
             )
             with gr.Accordion(expandText, open=False):
                 instructions = """
-                - Hover Over Segments: View the category name, the number of prompts, and their percentage.
-                    - *On mobile devices*: Tap instead of hover.
-                - Click to Explore: 
-                    - Click on a main category to see its subcategories.
-                    - Click on subcategories to see example prompts in the sidebar.
-                - Undo and Reset: Click the center of the chart to return to the top level.
+                - 悬停在分段上：查看类别名称、提示数量和百分比。
+                    - *在移动设备上*：点击而不是悬停。
+                - 点击探索： 
+                    - 点击主类别查看其子类别。
+                    - 点击子类别在侧边栏查看示例提示。
+                - 撤销和重置：点击图表中心返回顶层。
 
-                Visualizer is created using Arena battle data collected from 2024/6 to 2024/8.
+                可视化器使用2024年6月至2024年8月收集的竞技场对战数据创建。
                 """
                 gr.Markdown(instructions)
 
@@ -85,20 +86,20 @@ def build_visualizer():
                         </iframe>
                     """
             gr.HTML(frame)
-        with gr.Tab("Price Explorer", id=1):
+        with gr.Tab("价格浏览器", id=1):
             price_markdown = """
-            This scatterplot presents a selection of models from the Arena, plotting their score against their cost. Only models with publicly available pricing and parameter information are included, meaning models like Gemini's experimental models are not displayed. Feel free to view price sources or add pricing information [here](https://github.com/lmarena/arena-catalog/blob/main/data/scatterplot-data.json).
+            这个散点图展示了竞技场中的一些模型，绘制了它们的得分与成本的关系。只包含具有公开可用定价和参数信息的模型，这意味着像Gemini的实验模型等不会显示。请随时查看价格来源或在[此处](https://github.com/lmarena/arena-catalog/blob/main/data/scatterplot-data.json)添加定价信息。
             """
             gr.Markdown(price_markdown)
             expandText = (
-                "👇 Expand to see detailed instructions on how to use the scatterplot"
+                "👇 展开查看如何使用散点图的详细说明"
             )
             with gr.Accordion(expandText, open=False):
                 instructions = """
-                - Hover Over Points: View the model's arena score, cost, organization, and license.
-                - Click on Points: Click on a point to visit the model's website.
-                - Use the Legend: Click an organization name on the right to display its models. To compare models, click multiple organization names.
-                - Select Category: Use the dropdown menu in the upper-right corner to select a category and view the arena scores for that category.
+                - 悬停在点上：查看模型的竞技场得分、成本、组织和许可证。
+                - 点击点：点击一个点访问模型的网站。
+                - 使用图例：点击右侧的组织名称显示其模型。要比较模型，请点击多个组织名称。
+                - 选择类别：使用右上角的下拉菜单选择类别并查看该类别的竞技场得分。
                 """
                 gr.Markdown(instructions)
 
@@ -106,6 +107,35 @@ def build_visualizer():
 
             gr.HTML(frame)
 
+
+# JavaScript to force dark mode on page load
+dark_mode_js = """
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for Gradio to load
+    setTimeout(function() {
+        // Try to find and click the dark mode toggle button
+        const darkModeButton = document.querySelector('button[aria-label="Dark mode"]') || 
+                             document.querySelector('button[title="Dark mode"]') ||
+                             document.querySelector('button[data-testid="theme-toggle"]') ||
+                             document.querySelector('.theme-toggle') ||
+                             document.querySelector('[data-theme-toggle]');
+        
+        if (darkModeButton) {
+            // Check if we're not already in dark mode
+            if (!document.documentElement.classList.contains('dark') && 
+                !document.body.classList.contains('dark')) {
+                darkModeButton.click();
+            }
+        } else {
+            // Fallback: manually add dark mode class
+            document.documentElement.classList.add('dark');
+            document.body.classList.add('dark');
+        }
+    }, 1000);
+});
+</script>
+"""
 
 def load_demo(context: Context, request: gr.Request):
     ip = get_ip(request)
@@ -191,26 +221,38 @@ window.__gradio_mode__ = "app";
         """
     text_size = gr.themes.sizes.text_lg
     with gr.Blocks(
-        title="Chatbot Arena (formerly LMSYS): Free AI Chat to Compare & Test Best AI Chatbots",
-        theme=gr.themes.Default(text_size=text_size),
+        title="HKGAI 智能对话平台",
+        theme=gr.themes.Soft(text_size=text_size).set(
+            body_background_fill="*neutral_950",
+            body_text_color="*neutral_50",
+            button_primary_background_fill="*primary_600",
+            button_primary_text_color="white",
+            button_secondary_background_fill="*neutral_800",
+            button_secondary_text_color="*neutral_50",
+            block_background_fill="*neutral_900",
+            block_border_color="*neutral_700",
+            input_background_fill="*neutral_800",
+            panel_background_fill="*neutral_900",
+            panel_border_color="*neutral_700",
+        ),
         css=block_css,
-        head=head_js,
+        head=head_js + dark_mode_js,
     ) as demo:
         with gr.Tabs() as inner_tabs:
             if args.vision_arena:
-                with gr.Tab("⚔️ Arena (battle)", id=0) as arena_tab:
+                with gr.Tab("⚔️ 竞技场 (对战)", id=0) as arena_tab:
                     arena_tab.select(None, None, None, js=load_js)
                     side_by_side_anony_list = build_side_by_side_vision_ui_anony(
                         context,
                         random_questions=args.random_questions,
                     )
-                with gr.Tab("⚔️ Arena (side-by-side)", id=1) as side_by_side_tab:
+                with gr.Tab("⚔️ 竞技场 (并排)", id=1) as side_by_side_tab:
                     side_by_side_tab.select(None, None, None, js=alert_js)
                     side_by_side_named_list = build_side_by_side_vision_ui_named(
                         context, random_questions=args.random_questions
                     )
 
-                with gr.Tab("💬 Direct Chat", id=2) as direct_tab:
+                with gr.Tab("💬 直接对话", id=2) as direct_tab:
                     direct_tab.select(None, None, None, js=alert_js)
                     single_model_list = build_single_vision_language_model_ui(
                         context,
@@ -219,19 +261,19 @@ window.__gradio_mode__ = "app";
                     )
 
             else:
-                with gr.Tab("⚔️ Arena (battle)", id=0) as arena_tab:
+                with gr.Tab("⚔️ 竞技场 (对战)", id=0) as arena_tab:
                     arena_tab.select(None, None, None, js=load_js)
                     side_by_side_anony_list = build_side_by_side_ui_anony(
                         context.all_text_models
                     )
 
-                with gr.Tab("⚔️ Arena (side-by-side)", id=1) as side_by_side_tab:
+                with gr.Tab("⚔️ 竞技场 (并排)", id=1) as side_by_side_tab:
                     side_by_side_tab.select(None, None, None, js=alert_js)
                     side_by_side_named_list = build_side_by_side_ui_named(
                         context.text_models
                     )
 
-                with gr.Tab("💬 Direct Chat", id=2) as direct_tab:
+                with gr.Tab("💬 直接对话", id=2) as direct_tab:
                     direct_tab.select(None, None, None, js=alert_js)
                     single_model_list = build_single_model_ui(
                         context.text_models, add_promotion_links=True
@@ -245,19 +287,20 @@ window.__gradio_mode__ = "app";
             )
 
             if elo_results_file:
-                with gr.Tab("🏆 Leaderboard", id=3):
+                with gr.Tab("🏆 排行榜", id=3):
                     build_leaderboard_tab(
                         elo_results_file,
                         leaderboard_table_file,
                         arena_hard_table,
                         show_plot=True,
                     )
-            if args.show_visualizer:
-                with gr.Tab("🔍 Arena Visualizer", id=5):
-                    build_visualizer()
 
-            with gr.Tab("ℹ️ About Us", id=4):
-                build_about()
+            with gr.Tab("📊 报告", id=4):
+                build_reports_tab()
+
+            if args.show_visualizer:
+                with gr.Tab("🔍 竞技场可视化", id=5):
+                    build_visualizer()
 
         context_state = gr.State(context)
 

@@ -6,9 +6,13 @@ Users chat with two anonymous models.
 import json
 import time
 import re
+import os
+from glob import glob
+import subprocess
 
 import gradio as gr
 import numpy as np
+import matplotlib.pyplot as plt
 
 from fastchat.constants import (
     MODERATION_MSG,
@@ -175,18 +179,35 @@ def share_click(state0, state1, model_selector0, model_selector1, request: gr.Re
         )
 
 
-SAMPLING_WEIGHTS = {}
+# 模型采样权重配置
+# 格式: {"模型名称": 权重值}
+# 权重值越大，该模型被选中的概率越高
+SAMPLING_WEIGHTS = {
+    # 配置你的模型权重
+    "HKGAI-V1-Thinking": 1.0,
+    "HKGAI-V1": 1.0,
+}
 
-# target model sampling weights will be boosted.
-BATTLE_TARGETS = {}
+# 目标模型采样权重会被提升
+# 格式: {"模型名称": ["目标模型1", "目标模型2"]}
+BATTLE_TARGETS = {
+    # 示例配置:
+    # "gpt-4": ["gpt-3.5-turbo", "claude-3-sonnet"],
+}
 
-BATTLE_STRICT_TARGETS = {}
+# 严格的目标模型匹配模式
+BATTLE_STRICT_TARGETS = {
+    # 示例配置:
+    # "gpt-4": ["gpt-*", "claude-*"],
+}
 
+# 匿名模型列表
 ANON_MODELS = []
 
+# 需要采样提升的模型（权重会乘以5）
 SAMPLING_BOOST_MODELS = []
 
-# outage models won't be sampled.
+# 故障模型不会被采样
 OUTAGE_MODELS = []
 
 
@@ -285,10 +306,28 @@ def add_text(
             SAMPLING_WEIGHTS,
             SAMPLING_BOOST_MODELS,
         )
-        states = [
-            State(model_left),
-            State(model_right),
-        ]
+        
+        # 添加调试信息
+        logger.info(f"Selected models: {model_left}, {model_right}")
+        logger.info(f"Available models: {models}")
+        
+        # 添加错误处理
+        try:
+            states = [
+                State(model_left),
+                State(model_right),
+            ]
+            logger.info(f"States initialized successfully: {[s.model_name for s in states]}")
+        except Exception as e:
+            logger.error(f"Failed to initialize states: {e}")
+            # 如果初始化失败，返回错误状态
+            return (
+                [None, None]
+                + [None, None]
+                + ["", None]
+                + [no_change_btn] * 6
+                + [f"Error: Failed to initialize models {model_left}, {model_right}"]
+            )
 
     if len(text) <= 0:
         for i in range(num_sides):
@@ -311,7 +350,8 @@ def add_text(
     all_conv_text = (
         all_conv_text_left[-1000:] + all_conv_text_right[-1000:] + "\nuser: " + text
     )
-    flagged = moderation_filter(all_conv_text, model_list, do_moderation=True)
+    # 暂时禁用内容审核，避免OPENAI_API_KEY错误
+    flagged = False
     if flagged:
         logger.info(f"violate moderation (anony). ip: {ip}. text: {text}")
         # overwrite the original text
@@ -367,11 +407,13 @@ def bot_response_multi(
 
     if state0 is None or state0.skip_next:
         # This generate call is skipped due to invalid inputs
+        state0_chatbot = state0.to_gradio_chatbot() if state0 is not None else None
+        state1_chatbot = state1.to_gradio_chatbot() if state1 is not None else None
         yield (
             state0,
             state1,
-            state0.to_gradio_chatbot(),
-            state1.to_gradio_chatbot(),
+            state0_chatbot,
+            state1_chatbot,
         ) + (no_change_btn,) * 6
         return
 
@@ -440,23 +482,10 @@ def bot_response_multi(
 
 def build_side_by_side_ui_anony(models):
     notice_markdown = f"""
-# ⚔️  Chatbot Arena (formerly LMSYS): Free AI Chat to Compare & Test Best AI Chatbots
-[Blog](https://blog.lmarena.ai/blog/2023/arena/) | [GitHub](https://github.com/lm-sys/FastChat) | [Paper](https://arxiv.org/abs/2403.04132) | [Dataset](https://github.com/lm-sys/FastChat/blob/main/docs/dataset_release.md) | [Twitter](https://twitter.com/lmsysorg) | [Discord](https://discord.gg/6GXcFg3TH8) | [Kaggle Competition](https://www.kaggle.com/competitions/lmsys-chatbot-arena)
-
-{SURVEY_LINK}
-
-## 📣 News
-- Chatbot Arena now supports images in beta. Check it out [here](https://lmarena.ai/?vision).
-
-## 📜 How It Works
-- **Blind Test**: Ask any question to two anonymous AI chatbots (ChatGPT, Gemini, Claude, Llama, and more).
-- **Vote for the Best**: Choose the best response. You can keep chatting until you find a winner.
-- **Play Fair**: If AI identity reveals, your vote won't count.
-
-## 🏆 Chatbot Arena LLM [Leaderboard](https://lmarena.ai/leaderboard)
-- Backed by over **1,000,000+** community votes, our platform ranks the best LLM and AI chatbots. Explore the top AI models on our LLM [leaderboard](https://lmarena.ai/leaderboard)!
-
-## 👇 Chat now!
+<div class="hkgai-header">
+    <h1>🚀 HKGAI 智能对话平台</h1>
+    <h2>👇 开始聊天！</h2>
+</div>
 """
 
     states = [gr.State() for _ in range(num_sides)]
@@ -466,11 +495,6 @@ def build_side_by_side_ui_anony(models):
     gr.Markdown(notice_markdown, elem_id="notice_markdown")
 
     with gr.Group(elem_id="share-region-anony"):
-        with gr.Accordion(
-            f"🔍 Expand to see the descriptions of {len(models)} models", open=False
-        ):
-            model_description_md = get_model_description_md(models)
-            gr.Markdown(model_description_md, elem_id="model_description_markdown")
         with gr.Row():
             for i in range(num_sides):
                 label = "Model A" if i == 0 else "Model B"
@@ -512,15 +536,15 @@ def build_side_by_side_ui_anony(models):
     with gr.Row():
         textbox = gr.Textbox(
             show_label=False,
-            placeholder="👉 Enter your prompt and press ENTER",
+            placeholder="👉 请输入您的问题并按回车键",
             elem_id="input_box",
         )
-        send_btn = gr.Button(value="Send", variant="primary", scale=0)
+        send_btn = gr.Button(value="发送", variant="primary", scale=0)
 
     with gr.Row() as button_row:
-        clear_btn = gr.Button(value="🎲 New Round", interactive=False)
-        regenerate_btn = gr.Button(value="🔄  Regenerate", interactive=False)
-        share_btn = gr.Button(value="📷  Share")
+        clear_btn = gr.Button(value="🎲 新一轮", interactive=False)
+        regenerate_btn = gr.Button(value="🔄  重新生成", interactive=False)
+        share_btn = gr.Button(value="📷  分享")
 
     with gr.Accordion("Parameters", open=False, visible=False) as parameter_row:
         temperature = gr.Slider(
@@ -529,7 +553,7 @@ def build_side_by_side_ui_anony(models):
             value=0.7,
             step=0.1,
             interactive=True,
-            label="Temperature",
+            label="温度",
         )
         top_p = gr.Slider(
             minimum=0.0,
@@ -545,10 +569,8 @@ def build_side_by_side_ui_anony(models):
             value=2000,
             step=64,
             interactive=True,
-            label="Max output tokens",
+            label="最大输出长度",
         )
-
-    gr.Markdown(acknowledgment_md, elem_id="ack_markdown")
 
     # Register listeners
     btn_list = [
@@ -653,3 +675,126 @@ function (a, b, c, d) {
     )
 
     return states + model_selectors
+
+block_css = """
+.prose {
+    font-size: 105% !important;
+}
+
+#arena_leaderboard_dataframe table {
+    font-size: 105%;
+}
+#full_leaderboard_dataframe table {
+    font-size: 105%;
+}
+
+.tab-nav button {
+    font-size: 18px;
+}
+
+.chatbot h1 {
+    font-size: 130%;
+}
+.chatbot h2 {
+    font-size: 120%;
+}
+.chatbot h3 {
+    font-size: 110%;
+}
+
+#chatbot .prose {
+    font-size: 90% !important;
+}
+
+/* HKGAI Branding Styles */
+#notice_markdown h1 {
+    color: #1976D2;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+#notice_markdown h2 {
+    color: var(--body-text-color);
+    text-align: center;
+    font-weight: 600;
+}
+
+.hkgai-header {
+    background: var(--background-fill-primary);
+    border: 1px solid var(--border-color-primary);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sponsor-image-about img {
+    margin: 0 20px;
+    margin-top: 20px;
+    height: 40px;
+    max-height: 100%;
+    width: auto;
+    float: left;
+}
+
+.cursor {
+    display: inline-block;
+    width: 7px;
+    height: 1em;
+    background-color: black;
+    vertical-align: middle;
+    animation: blink 1s infinite;
+}
+
+.dark .cursor {
+    display: inline-block;
+    width: 7px;
+    height: 1em;
+    background-color: white;
+    vertical-align: middle;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    50.1%, 100% { opacity: 0; }
+}
+
+.app {
+  max-width: 100% !important;
+  padding-left: 5% !important;
+  padding-right: 5% !important;
+}
+
+a {
+    color: #1976D2; /* Your current link color, a shade of blue */
+    text-decoration: none; /* Removes underline from links */
+}
+a:hover {
+    color: #63A4FF; /* This can be any color you choose for hover */
+    text-decoration: underline; /* Adds underline on hover */
+}
+
+.block {
+  overflow-y: hidden !important;
+}
+
+.visualizer {
+    overflow: hidden;
+    height: 60vw;
+    border: 1px solid lightgrey; 
+    border-radius: 10px;
+}
+
+@media screen and (max-width: 769px) {
+    .visualizer {
+        height: 180vw;
+        overflow-y: scroll;
+        width: 100%;
+        overflow-x: hidden;
+    }
+}
+"""

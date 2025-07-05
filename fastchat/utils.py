@@ -240,6 +240,15 @@ def pretty_print_semaphore(semaphore):
 get_window_url_params_js = """
 function() {
     const params = new URLSearchParams(window.location.search);
+    
+    // Add default theme=dark if not present
+    if (!params.has('__theme')) {
+        params.set('__theme', 'dark');
+        // Update URL without refreshing page
+        const newUrl = window.location.pathname + '?' + params.toString();
+        window.history.replaceState({}, '', newUrl);
+    }
+    
     url_params = Object.fromEntries(params);
     console.log("url_params", url_params);
     return url_params;
@@ -249,6 +258,15 @@ function() {
 get_window_url_params_with_tos_js = """
 function() {
     const params = new URLSearchParams(window.location.search);
+    
+    // Add default theme=dark if not present
+    if (!params.has('__theme')) {
+        params.set('__theme', 'dark');
+        // Update URL without refreshing page
+        const newUrl = window.location.pathname + '?' + params.toString();
+        window.history.replaceState({}, '', newUrl);
+    }
+    
     const url_params = Object.fromEntries(params);
     console.log("url_params", url_params);
 

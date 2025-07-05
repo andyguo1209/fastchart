@@ -68,6 +68,131 @@ logger = build_logger("gradio_web_server_multi", "gradio_web_server_multi.log")
 num_sides = 2
 enable_moderation = False
 
+block_css = """
+.prose {
+    font-size: 105% !important;
+}
+
+#arena_leaderboard_dataframe table {
+    font-size: 105%;
+}
+#full_leaderboard_dataframe table {
+    font-size: 105%;
+}
+
+.tab-nav button {
+    font-size: 18px;
+}
+
+.chatbot h1 {
+    font-size: 130%;
+}
+.chatbot h2 {
+    font-size: 120%;
+}
+.chatbot h3 {
+    font-size: 110%;
+}
+
+#chatbot .prose {
+    font-size: 90% !important;
+}
+
+/* HKGAI Branding Styles */
+#notice_markdown {
+    font-size: 104%
+}
+#notice_markdown .hkgai-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+    color: var(--body-text-color);
+}
+#notice_markdown .hkgai-header h2 {
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin: 0.5rem 0 0 0;
+    color: var(--body-text-color);
+}
+.hkgai-header {
+    background: var(--background-fill-primary);
+    border: 1px solid var(--border-color-primary);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sponsor-image-about img {
+    margin: 0 20px;
+    margin-top: 20px;
+    height: 40px;
+    max-height: 100%;
+    width: auto;
+    float: left;
+}
+
+.cursor {
+    display: inline-block;
+    width: 7px;
+    height: 1em;
+    background-color: black;
+    vertical-align: middle;
+    animation: blink 1s infinite;
+}
+
+.dark .cursor {
+    display: inline-block;
+    width: 7px;
+    height: 1em;
+    background-color: #e2e8f0;
+    vertical-align: middle;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    50.1%, 100% { opacity: 0; }
+}
+
+.app {
+  max-width: 100% !important;
+  padding-left: 5% !important;
+  padding-right: 5% !important;
+}
+
+a {
+    color: #1976D2; /* Your current link color, a shade of blue */
+    text-decoration: none; /* Removes underline from links */
+}
+a:hover {
+    color: #63A4FF; /* This can be any color you choose for hover */
+    text-decoration: underline; /* Adds underline on hover */
+}
+
+.block {
+  overflow-y: hidden !important;
+}
+
+.visualizer {
+    overflow: hidden;
+    height: 60vw;
+    border: 1px solid lightgrey; 
+    border-radius: 10px;
+}
+
+@media screen and (max-width: 769px) {
+    .visualizer {
+        height: 180vw;
+        overflow-y: scroll;
+        width: 100%;
+        overflow-x: hidden;
+    }
+}
+"""
+
 
 def load_demo_side_by_side_vision_named(context: Context):
     states = [None] * num_sides
@@ -304,20 +429,10 @@ def add_text(
 
 def build_side_by_side_vision_ui_named(context: Context, random_questions=None):
     notice_markdown = f"""
-# ⚔️  Chatbot Arena (formerly LMSYS): Free AI Chat to Compare & Test Best AI Chatbots
-[Blog](https://blog.lmarena.ai/blog/2023/arena/) | [GitHub](https://github.com/lm-sys/FastChat) | [Paper](https://arxiv.org/abs/2403.04132) | [Dataset](https://github.com/lm-sys/FastChat/blob/main/docs/dataset_release.md) | [Twitter](https://twitter.com/lmsysorg) | [Discord](https://discord.gg/6GXcFg3TH8) | [Kaggle Competition](https://www.kaggle.com/competitions/lmsys-chatbot-arena)
-
-{SURVEY_LINK}
-
-## 📜 How It Works
-- Ask any question to two chosen models (e.g., ChatGPT, Gemini, Claude, Llama) and vote for the better one!
-- You can chat for multiple turns until you identify a winner.
-
-Note: You can only chat with <span style='color: #DE3163; font-weight: bold'>one image per conversation</span>. You can upload images less than 15MB. Click the "Random Example" button to chat with a random image.
-
-**❗️ For research purposes, we log user prompts and images, and may release this data to the public in the future. Please do not upload any confidential or personal information.**
-
-## 🤖 Choose two models to compare
+<div class="hkgai-header">
+    <h1>🚀 HKGAI 智能对话平台</h1>
+    <h2>👇 开始聊天！</h2>
+</div>
 """
 
     states = [gr.State() for _ in range(num_sides)]
@@ -395,19 +510,19 @@ Note: You can only chat with <span style='color: #DE3163; font-weight: bold'>one
     with gr.Row():
         textbox = gr.Textbox(
             show_label=False,
-            placeholder="👉 Enter your prompt and press ENTER",
+            placeholder="👉 请输入您的问题并按回车键",
             elem_id="input_box",
             visible=False,
         )
 
         send_btn = gr.Button(
-            value="Send", variant="primary", scale=0, visible=False, interactive=False
+            value="发送", variant="primary", scale=0, visible=False, interactive=False
         )
 
         multimodal_textbox = gr.MultimodalTextbox(
             file_types=["image"],
             show_label=False,
-            placeholder="Enter your prompt or add image here",
+            placeholder="请输入您的问题或上传图片",
             container=True,
             elem_id="input_box",
         )
@@ -418,9 +533,9 @@ Note: You can only chat with <span style='color: #DE3163; font-weight: bold'>one
             with open(random_questions, "r") as f:
                 vqa_samples = json.load(f)
             random_btn = gr.Button(value="🎲 Random Example", interactive=True)
-        clear_btn = gr.Button(value="🗑️  Clear history", interactive=False)
-        regenerate_btn = gr.Button(value="🔄  Regenerate", interactive=False)
-        share_btn = gr.Button(value="📷  Share")
+        clear_btn = gr.Button(value="🗑️  清除历史", interactive=False)
+        regenerate_btn = gr.Button(value="🔄  重新生成", interactive=False)
+        share_btn = gr.Button(value="📷  分享")
 
     with gr.Accordion("Parameters", open=False) as parameter_row:
         temperature = gr.Slider(
@@ -429,7 +544,7 @@ Note: You can only chat with <span style='color: #DE3163; font-weight: bold'>one
             value=0.7,
             step=0.1,
             interactive=True,
-            label="Temperature",
+            label="温度",
         )
         top_p = gr.Slider(
             minimum=0.0,
@@ -445,10 +560,10 @@ Note: You can only chat with <span style='color: #DE3163; font-weight: bold'>one
             value=1024,
             step=64,
             interactive=True,
-            label="Max output tokens",
+            label="最大输出长度",
         )
 
-    gr.Markdown(acknowledgment_md, elem_id="ack_markdown")
+    # gr.Markdown(acknowledgment_md, elem_id="ack_markdown")
 
     # Register listeners
     btn_list = [

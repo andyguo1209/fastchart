@@ -362,7 +362,20 @@ def build_demo():
 
     with gr.Blocks(
         title="MT-Bench Browser",
-        theme=gr.themes.Base(text_size=gr.themes.sizes.text_lg),
+        theme=gr.themes.Base(text_size=gr.themes.sizes.text_lg).set(
+            body_background_fill="*neutral_950",
+            body_text_color="*neutral_50",
+            button_primary_background_fill="*primary_500",
+            button_primary_text_color="white",
+            button_secondary_background_fill="*neutral_800",
+            button_secondary_text_color="*neutral_50",
+            block_background_fill="*neutral_900",
+            block_border_color="*neutral_700",
+            input_background_fill="*neutral_800",
+            input_text_color="*neutral_50",
+            panel_background_fill="*neutral_900",
+            panel_border_color="*neutral_700"
+        ),
         css=block_css,
     ) as demo:
         gr.Markdown(

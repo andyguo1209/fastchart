@@ -66,6 +66,128 @@ visible_text = gr.Textbox(
 )
 disable_multimodal = gr.MultimodalTextbox(visible=False, value=None, interactive=False)
 
+block_css = """
+.prose {
+    font-size: 105% !important;
+}
+
+#arena_leaderboard_dataframe table {
+    font-size: 105%;
+}
+#full_leaderboard_dataframe table {
+    font-size: 105%;
+}
+
+.tab-nav button {
+    font-size: 18px;
+}
+
+.chatbot h1 {
+    font-size: 130%;
+}
+.chatbot h2 {
+    font-size: 120%;
+}
+.chatbot h3 {
+    font-size: 110%;
+}
+
+#chatbot .prose {
+    font-size: 90% !important;
+}
+
+/* HKGAI Branding Styles */
+#notice_markdown h1 {
+    color: #1976D2;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+#notice_markdown h2 {
+    color: var(--body-text-color);
+    text-align: center;
+    font-weight: 600;
+}
+
+.hkgai-header {
+    background: var(--background-fill-primary);
+    border: 1px solid var(--border-color-primary);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sponsor-image-about img {
+    margin: 0 20px;
+    margin-top: 20px;
+    height: 40px;
+    max-height: 100%;
+    width: auto;
+    float: left;
+}
+
+.cursor {
+    display: inline-block;
+    width: 7px;
+    height: 1em;
+    background-color: black;
+    vertical-align: middle;
+    animation: blink 1s infinite;
+}
+
+.dark .cursor {
+    display: inline-block;
+    width: 7px;
+    height: 1em;
+    background-color: white;
+    vertical-align: middle;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    50.1%, 100% { opacity: 0; }
+}
+
+.app {
+  max-width: 100% !important;
+  padding-left: 5% !important;
+  padding-right: 5% !important;
+}
+
+a {
+    color: #1976D2; /* Your current link color, a shade of blue */
+    text-decoration: none; /* Removes underline from links */
+}
+a:hover {
+    color: #63A4FF; /* This can be any color you choose for hover */
+    text-decoration: underline; /* Adds underline on hover */
+}
+
+.block {
+  overflow-y: hidden !important;
+}
+
+.visualizer {
+    overflow: hidden;
+    height: 60vw;
+    border: 1px solid lightgrey; 
+    border-radius: 10px;
+}
+
+@media screen and (max-width: 769px) {
+    .visualizer {
+        height: 180vw;
+        overflow-y: scroll;
+        width: 100%;
+        overflow-x: hidden;
+    }
+}
+"""
 
 def get_vqa_sample():
     random_sample = np.random.choice(vqa_samples)
@@ -298,22 +420,11 @@ def add_text(
 def build_single_vision_language_model_ui(
     context: Context, add_promotion_links=False, random_questions=None
 ):
-    promotion = (
-        f"""
-[Blog](https://blog.lmarena.ai/blog/2023/arena/) | [GitHub](https://github.com/lm-sys/FastChat) | [Paper](https://arxiv.org/abs/2403.04132) | [Dataset](https://github.com/lm-sys/FastChat/blob/main/docs/dataset_release.md) | [Twitter](https://twitter.com/lmsysorg) | [Discord](https://discord.gg/6GXcFg3TH8) | [Kaggle Competition](https://www.kaggle.com/competitions/lmsys-chatbot-arena)
-
-{SURVEY_LINK}
-
-**❗️ For research purposes, we log user prompts and images, and may release this data to the public in the future. Please do not upload any confidential or personal information.**
-
-Note: You can only chat with <span style='color: #DE3163; font-weight: bold'>one image per conversation</span>. You can upload images less than 15MB. Click the "Random Example" button to chat with a random image."""
-        if add_promotion_links
-        else ""
-    )
-
     notice_markdown = f"""
-# 🏔️ Chatbot Arena (formerly LMSYS): Free AI Chat to Compare & Test Best AI Chatbots
-{promotion}
+<div class="hkgai-header">
+    <h1>🚀 HKGAI 智能对话平台</h1>
+    <h2>👇 开始聊天！</h2>
+</div>
 """
 
     state = gr.State()
@@ -335,13 +446,6 @@ Note: You can only chat with <span style='color: #DE3163; font-weight: bold'>one
                 show_label=False,
                 container=False,
             )
-
-        with gr.Accordion(
-            f"🔍 Expand to see the descriptions of {len(text_and_vision_models)} models",
-            open=False,
-        ):
-            model_description_md = get_model_description_md(text_and_vision_models)
-            gr.Markdown(model_description_md, elem_id="model_description_markdown")
 
     with gr.Row():
         with gr.Column(scale=2, visible=False) as image_column:
@@ -367,19 +471,19 @@ Note: You can only chat with <span style='color: #DE3163; font-weight: bold'>one
     with gr.Row():
         textbox = gr.Textbox(
             show_label=False,
-            placeholder="👉 Enter your prompt and press ENTER",
+            placeholder="👉 请输入您的问题并按回车键",
             elem_id="input_box",
             visible=False,
         )
 
         send_btn = gr.Button(
-            value="Send", variant="primary", scale=0, visible=False, interactive=False
+            value="发送", variant="primary", scale=0, visible=False, interactive=False
         )
 
         multimodal_textbox = gr.MultimodalTextbox(
             file_types=["image"],
             show_label=False,
-            placeholder="Enter your prompt or add image here",
+            placeholder="请输入您的问题或上传图片",
             container=True,
             elem_id="input_box",
         )
@@ -390,58 +494,42 @@ Note: You can only chat with <span style='color: #DE3163; font-weight: bold'>one
             with open(random_questions, "r") as f:
                 vqa_samples = json.load(f)
             random_btn = gr.Button(value="🎲 Random Example", interactive=True)
-        upvote_btn = gr.Button(value="👍  Upvote", interactive=False)
-        downvote_btn = gr.Button(value="👎  Downvote", interactive=False)
-        flag_btn = gr.Button(value="⚠️  Flag", interactive=False)
-        regenerate_btn = gr.Button(value="🔄  Regenerate", interactive=False)
-        clear_btn = gr.Button(value="🗑️  Clear", interactive=False)
+        # Hide voting buttons to keep interface clean
+        upvote_btn = gr.Button(value="👍  Upvote", interactive=False, visible=False)
+        downvote_btn = gr.Button(value="👎  Downvote", interactive=False, visible=False)
+        flag_btn = gr.Button(value="⚠️  Flag", interactive=False, visible=False)
+        regenerate_btn = gr.Button(value="🔄  重新生成", interactive=False)
+        clear_btn = gr.Button(value="🗑️  清除历史", interactive=False)
+        share_btn = gr.Button(value="📷  分享")
 
-    with gr.Accordion("Parameters", open=False) as parameter_row:
+    with gr.Accordion("Parameters", open=False, visible=False) as parameter_row:
         temperature = gr.Slider(
             minimum=0.0,
             maximum=1.0,
             value=0.7,
             step=0.1,
             interactive=True,
-            label="Temperature",
+            label="温度",
         )
         top_p = gr.Slider(
             minimum=0.0,
             maximum=1.0,
-            value=0.7,
+            value=1.0,
             step=0.1,
             interactive=True,
             label="Top P",
         )
         max_output_tokens = gr.Slider(
-            minimum=0,
+            minimum=16,
             maximum=2048,
             value=1024,
             step=64,
             interactive=True,
-            label="Max output tokens",
+            label="最大输出长度",
         )
 
-    if add_promotion_links:
-        gr.Markdown(acknowledgment_md, elem_id="ack_markdown")
-
     # Register listeners
-    btn_list = [upvote_btn, downvote_btn, flag_btn, regenerate_btn, clear_btn]
-    upvote_btn.click(
-        upvote_last_response,
-        [state, model_selector],
-        [textbox, upvote_btn, downvote_btn, flag_btn],
-    )
-    downvote_btn.click(
-        downvote_last_response,
-        [state, model_selector],
-        [textbox, upvote_btn, downvote_btn, flag_btn],
-    )
-    flag_btn.click(
-        flag_last_response,
-        [state, model_selector],
-        [textbox, upvote_btn, downvote_btn, flag_btn],
-    )
+    btn_list = [regenerate_btn, clear_btn]
     regenerate_btn.click(regenerate, state, [state, chatbot, textbox] + btn_list).then(
         bot_response,
         [state, temperature, top_p, max_output_tokens],

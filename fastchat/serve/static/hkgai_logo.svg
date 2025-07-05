@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="200" height="60" fill="#1976D2" rx="10"/>
+  
+  <!-- Logo text -->
+  <text x="100" y="38" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="24" font-weight="bold">
+    HKGAI
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="100" y="52" text-anchor="middle" fill="#E3F2FD" font-family="Arial, sans-serif" font-size="10">
+    智能对话平台
+  </text>
+</svg> 
