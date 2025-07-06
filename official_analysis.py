@@ -109,7 +109,7 @@ def create_summary_report():
     """创建分析总结报告"""
     print("\n📋 创建分析总结报告...")
     
-    report_content = f"""# FastChat 投票分析报告
+    report_content = f"""# HKGAI 投票分析报告
 
 ## 分析时间
 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
@@ -220,7 +220,7 @@ def main():
     gr.Markdown(
         """
         <div style="background:#667eea;color:white;padding:24px 10px 16px 10px;text-align:center;">
-          <h1 style="font-size:2em;margin-bottom:8px;">FastChat 投票分析报告</h1>
+          <h1 style="font-size:2em;margin-bottom:8px;">HKGAI 投票分析报告</h1>
           <div style="font-size:1.1em;opacity:0.92;">模型对战结果统计与ELO排名分析</div>
           <div style="font-size:0.95em;margin-top:10px;opacity:0.8;">数据来源: FastChat Arena 投票系统</div>
           <a href="reports/2025-06-27_091319/report.html" target="_blank" style="display:inline-block;margin-top:18px;padding:8px 22px;background:#ff9800;color:white;font-weight:bold;border-radius:6px;text-decoration:none;">�� 查看完整报告</a>

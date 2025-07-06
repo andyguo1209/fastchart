@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FastChat 投票分析自动化脚本
+HKGAI 投票分析自动化脚本
 自动分析投票数据，生成ELO排名，并启动Web展示
 """
 
@@ -48,7 +48,7 @@ def create_web_dashboard():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FastChat 投票分析仪表板</title>
+    <title>HKGAI 投票分析仪表板</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -209,7 +209,7 @@ def create_web_dashboard():
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 FastChat 投票分析仪表板</h1>
+            <h1>🚀 HKGAI 投票分析仪表板</h1>
             <p>模型对战结果统计与ELO排名分析</p>
             <button class="refresh-btn" onclick="location.reload()">🔄 刷新数据</button>
         </div>
@@ -294,7 +294,7 @@ def create_web_dashboard():
 
         <div class="footer">
             <p>🕒 最后更新时间: <span id="lastUpdate">-</span></p>
-            <p>📊 数据来源: FastChat Arena 投票系统</p>
+            <p>📊 数据来源: HKGAI Arena 投票系统</p>
         </div>
     </div>
 
@@ -498,7 +498,7 @@ def start_web_server(port=8080):
         print(f"❌ 启动服务器失败: {e}")
 
 def main():
-    parser = argparse.ArgumentParser(description="FastChat 投票分析自动化脚本")
+    parser = argparse.ArgumentParser(description="HKGAI 投票分析自动化脚本")
     parser.add_argument("--log-file", type=str, required=True, help="投票日志文件路径")
     parser.add_argument("--port", type=int, default=8080, help="Web服务器端口 (默认: 8080)")
     parser.add_argument("--no-web", action="store_true", help="只分析数据，不启动Web服务器")
@@ -510,7 +510,7 @@ def main():
         print(f"❌ 错误: 日志文件不存在: {args.log_file}")
         sys.exit(1)
     
-    print("🚀 FastChat 投票分析自动化脚本")
+    print("🚀 HKGAI 投票分析自动化脚本")
     print("=" * 50)
     
     # 分析投票数据

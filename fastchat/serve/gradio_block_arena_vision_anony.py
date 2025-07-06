@@ -479,7 +479,7 @@ def build_side_by_side_vision_ui_anony(context: Context, random_questions=None):
         else:
             # Define random_btn even when random_questions is None to avoid UnboundLocalError
             random_btn = gr.Button(value="🔮 Random Image", interactive=False, visible=False)
-        clear_btn = gr.Button(value="�� 新一轮", interactive=False)
+        clear_btn = gr.Button(value="🎲 新一轮", interactive=False)
         regenerate_btn = gr.Button(value="🔄  重新生成", interactive=False)
         share_btn = gr.Button(value="📷  分享")
 

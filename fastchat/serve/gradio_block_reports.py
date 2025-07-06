@@ -69,7 +69,7 @@ def run_generate_report(force_refresh=False):
                     
                     if report_file.exists():
                         print(f"✅ 找到报告文件: {report_file}")
-                        status_msg = "✅ FastChat 投票分析报告生成成功！已处理累积数据，包含最新投票信息。"
+                        status_msg = "✅ HKGAI 投票分析报告生成成功！已处理累积数据，包含最新投票信息。"
                         if force_refresh:
                             status_msg += " (强制刷新)"
                         return status_msg, str(report_file)
@@ -87,7 +87,7 @@ def run_generate_report(force_refresh=False):
                 if html_files:
                     latest_report = max(html_files, key=os.path.getmtime)
                     print(f"最新静态报告: {latest_report}")
-                    status_msg = "✅ FastChat 投票分析报告生成成功！已处理累积数据，包含最新投票信息。"
+                    status_msg = "✅ HKGAI 投票分析报告生成成功！已处理累积数据，包含最新投票信息。"
                     if force_refresh:
                         status_msg += " (强制刷新)"
                     return status_msg, str(latest_report)
@@ -1304,7 +1304,7 @@ def build_reports_tab():
         # 美化的标题区域
         gr.HTML("""
         <div class="header-section">
-            <h2>📊 FastChat 投票分析报告</h2>
+            <h2>🚀 HKGAI 投票分析报告</h2>
             <p>生成完整的投票分析报告，包含 ELO 排名、胜率统计和可视化图表</p>
         </div>
         """)
@@ -1321,7 +1321,7 @@ def build_reports_tab():
             with gr.Row():
                 status_box = gr.Textbox(
                     label="", 
-                    value="点击按钮生成 FastChat 投票分析报告", 
+                    value="点击按钮生成 HKGAI 投票分析报告", 
                     interactive=False,
                     max_lines=1,
                     show_label=False,
@@ -1346,7 +1346,7 @@ def build_reports_tab():
             # HTML报告显示区域
             html_report = gr.HTML(
                 label="", 
-                value="<div style='text-align: center; color: #f1f5f9; padding: 50px; background: linear-gradient(135deg, #475569 0%, #334155 100%); border-radius: 12px; border: 2px dashed #64748b;'><h3 style='margin: 0; color: #ffffff;'>📊 点击上方按钮生成 FastChat 投票分析报告</h3><p style='margin: 10px 0 0 0; opacity: 0.8; color: #cbd5e1;'>报告将在此处显示</p></div>",
+                value="<div style='text-align: center; color: #f1f5f9; padding: 50px; background: linear-gradient(135deg, #475569 0%, #334155 100%); border-radius: 12px; border: 2px dashed #64748b;'><h3 style='margin: 0; color: #ffffff;'>📊 点击上方按钮生成 HKGAI 投票分析报告</h3><p style='margin: 10px 0 0 0; opacity: 0.8; color: #cbd5e1;'>报告将在此处显示</p></div>",
                 elem_classes="report-container",
                 show_label=False
             )

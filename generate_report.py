@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FastChat 一键报告生成脚本
+HKGAI 一键报告生成脚本
 自动分析投票数据并生成HTML报告和摘要
 支持ELO排名计算和数据可视化
 """
@@ -39,7 +39,7 @@ def get_system_language():
 # 多语言文本配置
 TEXTS = {
     'zh': {
-        'script_title': '🚀 FastChat 一键报告生成脚本',
+        'script_title': '🚀 HKGAI 一键报告生成脚本',
         'separator': '=' * 50,
         'using_log_file': '📄 使用日志文件: {}',
         'log_file_not_found': '❌ 指定的日志文件不存在: {}',
@@ -76,7 +76,7 @@ TEXTS = {
         'cumulative_analysis_failed': '❌ 累积数据分析失败',
         
         # HTML报告文本
-        'html_title': 'FastChat 投票分析报告',
+        'html_title': 'HKGAI 投票分析报告',
         'report_title': '🚀 HKGAI 投票分析报告',
         'report_subtitle': '模型对战结果统计与ELO排名分析',
         'generation_time': '生成时间: {}',
@@ -98,7 +98,7 @@ TEXTS = {
         'win_rate': '胜率',
         'tie_rate': '平局率',
         'loss_rate': '失败率',
-        'footer_generated': '报告生成时间: {} | 数据来源: FastChat Arena 投票系统',
+        'footer_generated': '报告生成时间: {} | 数据来源: HKGAI Arena 投票系统',
         'footer_elo_info': 'ELO评级系统 | K因子: 32 | 置信区间: 95%',
         'footer_auto_info': '此报告由自动化脚本生成，支持定时更新',
         
@@ -112,7 +112,7 @@ TEXTS = {
         'chart_gen_failed': '图表生成失败'
     },
     'en': {
-        'script_title': '🚀 FastChat One-Click Report Generation Script',
+        'script_title': '🚀 HKGAI One-Click Report Generation Script',
         'separator': '=' * 50,
         'using_log_file': '📄 Using log file: {}',
         'log_file_not_found': '❌ Specified log file does not exist: {}',
@@ -149,7 +149,7 @@ TEXTS = {
         'cumulative_analysis_failed': '❌ Cumulative data analysis failed',
         
         # HTML报告文本
-        'html_title': 'FastChat Vote Analysis Report',
+        'html_title': 'HKGAI Vote Analysis Report',
         'report_title': '🚀 HKGAI Vote Analysis Report',
         'report_subtitle': 'Model Battle Results Statistics & ELO Ranking Analysis',
         'generation_time': 'Generated: {}',
@@ -171,7 +171,7 @@ TEXTS = {
         'win_rate': 'Win Rate',
         'tie_rate': 'Tie Rate',
         'loss_rate': 'Loss Rate',
-        'footer_generated': 'Report Generated: {} | Data Source: FastChat Arena Voting System',
+        'footer_generated': 'Report Generated: {} | Data Source: HKGAI Arena Voting System',
         'footer_elo_info': 'ELO Rating System | K-Factor: 32 | Confidence Interval: 95%',
         'footer_auto_info': 'This report is automatically generated and supports scheduled updates',
         
@@ -481,10 +481,10 @@ def create_report_html(data_source, vote_rows, elo_rows, distribution_data):
     # 确定数据源显示文本
     if data_source == "累积历史数据":
         data_source_text = "累积历史数据 (所有归档日志)"
-        report_title = "FastChat 累积投票分析报告"
+        report_title = "HKGAI 累积投票分析报告"
     else:
         data_source_text = f"单一日志文件: {Path(data_source).name}"
-        report_title = "FastChat 投票分析报告"
+        report_title = "HKGAI 投票分析报告"
     
     # 创建HTML内容
     html_content = f"""<!DOCTYPE html>
@@ -557,6 +557,8 @@ def create_report_html(data_source, vote_rows, elo_rows, distribution_data):
             grid-template-columns: repeat(4, 1fr); /* 固定4列，防止换行 */
             gap: 15px;
             margin-bottom: 20px;
+            width: 100%;
+            max-width: 1400px;
         }}
         
         .stat-card {{
@@ -1250,8 +1252,8 @@ def create_summary_report():
     elo_rows = [dict(zip(elo_headers, line.split(','))) for line in elo_lines[1:]]
     
     # 生成摘要报告
-    summary_content = "# FastChat 投票分析摘要报告\n\n"
-    summary_content += f"## 报告信息\n- **生成时间**: {timestamp}\n- **分析工具**: FastChat 投票分析系统\n- **数据来源**: Arena 投票日志\n\n"
+    summary_content = "# HKGAI 投票分析摘要报告\n\n"
+    summary_content += f"## 报告信息\n- **生成时间**: {timestamp}\n- **分析工具**: HKGAI 投票分析系统\n- **数据来源**: Arena 投票日志\n\n"
     summary_content += f"## 统计概览\n- **总投票数**: {distribution_data.get('leftvote', 0) + distribution_data.get('rightvote', 0) + distribution_data.get('tievote', 0) + distribution_data.get('bothbad_vote', 0)}\n- **参与模型数**: {len(vote_rows)}\n- **有效对战数**: {distribution_data.get('leftvote', 0) + distribution_data.get('rightvote', 0) + distribution_data.get('tievote', 0)}\n\n"
     summary_content += f"## 投票分布\n- **左方获胜**: {distribution_data.get('leftvote', 0)} 次\n- **右方获胜**: {distribution_data.get('rightvote', 0)} 次\n- **平局**: {distribution_data.get('tievote', 0)} 次\n\n"
     summary_content += "## ELO排名结果\n"
@@ -1441,7 +1443,7 @@ def generate_winrate_chart(vote_rows):
 def create_archive_readme(archive_dir, reports_generated):
     """创建归档目录的README.txt文件"""
     timestamp = datetime.now().strftime('%Y-%m-%d_%H%M%S')
-    readme_content = f"""FastChat Vote Analysis Archive Directory
+    readme_content = f"""HKGAI Vote Analysis Archive Directory
 ==========================================
 
 This directory contains a complete analysis archive for {timestamp} with the following files:
@@ -1465,7 +1467,7 @@ For batch archive management, manage the parent reports directory directly.
         f.write(readme_content)
 
 def main():
-    parser = argparse.ArgumentParser(description="FastChat 一键报告生成脚本")
+    parser = argparse.ArgumentParser(description="HKGAI 一键报告生成脚本")
     parser.add_argument("--log-file", type=str, default=None, 
                        help="投票日志文件路径，如果不指定将自动查找最新的日志文件")
     parser.add_argument("--html-only", action="store_true", 
@@ -1493,14 +1495,14 @@ def main():
             latest_log = find_latest_log_file()
             if latest_log is None:
                 print("❌ 未找到任何日志文件 (*-conv.json)")
-                print("💡 请确保FastChat正在运行并生成日志文件")
+                print("💡 请确保HKGAI正在运行并生成日志文件")
                 sys.exit(1)
             args.log_file = str(latest_log)
             print(f"✅ 找到最新日志文件: {args.log_file}")
         
         if not Path(args.log_file).exists():
             print(t('log_file_not_found').format(args.log_file))
-            print("💡 请确保FastChat正在运行并生成日志文件")
+            print("💡 请确保HKGAI正在运行并生成日志文件")
             sys.exit(1)
         
         log_file = Path(args.log_file).resolve()
@@ -1562,7 +1564,7 @@ def main():
     
     # 生成 logs_archive/README.txt
     with open(logs_archive_dir / 'README.txt', 'w', encoding='utf-8') as f:
-        f.write('''FastChat 日志归档目录
+        f.write('''HKGAI 日志归档目录
 ====================
 
 本目录用于集中存放所有原始投票日志文件，便于统一管理和后续分析。
