@@ -28,7 +28,7 @@ from fastchat.constants import (
 from fastchat.utils import build_logger
 
 
-logger = build_logger("controller", "controller.log")
+logger = build_logger("controller", "logs/controller.log")
 
 
 class DispatchMethod(Enum):

@@ -12,7 +12,8 @@ cd "$SCRIPT_DIR"
 
 # 运行报告生成
 echo "📊 正在生成最新报告..."
-python generate_report.py
+sed -i '' 's/python \([a-z_]*\.py\)/python scripts_py\/\1/g' $0
+python scripts_py/generate_report.py
 
 echo ""
 echo "✅ 报告更新完成！"

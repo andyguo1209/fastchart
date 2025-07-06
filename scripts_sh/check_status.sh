@@ -15,10 +15,10 @@ echo ""
 # 检查必要文件是否存在
 echo "📁 文件检查:"
 files_to_check=(
-    "generate_report.py"
+    "scripts_py/generate_report.py"
     "auto_report_schedule.sh"
     "setup_crontab.sh"
-    "vote_analysis.py"
+    "scripts_py/vote_analysis.py"
 )
 
 for file in "${files_to_check[@]}"; do
@@ -169,7 +169,7 @@ fi
 # 检查是否有最新数据
 if [[ -n "$latest_log" ]]; then
     echo "🔄 手动生成最新报告:"
-    echo "  运行: python generate_report.py"
+    echo "  运行: python scripts_py/generate_report.py"
     echo ""
 fi
 

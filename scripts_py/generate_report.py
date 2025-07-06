@@ -205,13 +205,11 @@ def run_command(cmd, description):
         print(f"错误输出: {e.stderr}")
         return None
 
-def find_latest_log_file(log_dir=".", pattern="*-conv.json"):
+def find_latest_log_file(log_dir="logs_archive", pattern="*-conv.json"):
     """查找最新的日志文件"""
     log_files = list(Path(log_dir).glob(pattern))
     if not log_files:
         return None
-    
-    # 按修改时间排序，返回最新的
     latest_file = max(log_files, key=lambda x: x.stat().st_mtime)
     return latest_file
 
@@ -301,7 +299,7 @@ def analyze_cumulative_vote_data():
         print(f"⚠️  Archive directory not found: {logs_archive_dir}")
     
     # 2. 从根目录获取最新日志文件（包含当前数据）
-    root_log_files = list(main_dir.glob('*-conv.json'))
+    root_log_files = list(logs_archive_dir.glob('*-conv.json'))
     if root_log_files:
         print(f"Found {len(root_log_files)} current log files in root directory")
         for root_file in root_log_files:
@@ -562,23 +560,28 @@ def create_report_html(data_source, vote_rows, elo_rows, distribution_data):
         }}
         
         .stat-card {{
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white !important;
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            min-height: 120px;
+            max-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }}
         
         .stat-number {{
-            font-size: clamp(1.2em, 2vw, 2em); /* 内容自适应缩放，防止溢出换行 */
+            font-size: 2.2em !important;
             font-weight: bold;
             margin-bottom: 5px;
             color: white !important;
+            line-height: 1.1;
+        }}
+        
+        .stat-number.stat-date {{
+            font-size: clamp(1.2em, 3vw, 2em) !important;
+            letter-spacing: 0.05em;
         }}
         
         .stat-label {{
-            font-size: 0.9em;
+            font-size: 1em;
             opacity: 0.9;
             color: white !important;
         }}
@@ -976,7 +979,7 @@ def create_report_html(data_source, vote_rows, elo_rows, distribution_data):
                     <div class="stat-label">有效对战数</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">{timestamp.split()[0]}</div>
+                    <div class="stat-number stat-date">{timestamp.split()[0]}</div>
                     <div class="stat-label">分析日期</div>
                 </div>
             </div>
@@ -1241,6 +1244,9 @@ def create_summary_report():
     except FileNotFoundError as e:
         print(t('data_file_missing').format(e))
         return False
+    except Exception as e:
+        print(t('data_read_failed').format(e))
+        return False
     
     # 解析数据
     vote_lines = vote_data.strip().split('\n')
@@ -1276,22 +1282,36 @@ def create_summary_report():
     print(t('summary_generated').format('summary.md'))
     return 'summary.md'
 
-def cleanup_old_reports(keep_days=7):
-   
-    print(t('cleanup_old_reports').format(keep_days))
-    
-    current_time = time.time()
-    cutoff_time = current_time - (keep_days * 24 * 60 * 60)
-    
-    # 清理旧报告
-    for pattern in ['report_*.html', 'summary_*.md']:
-        for file_path in Path('.').glob(pattern):
-            if file_path.stat().st_mtime < cutoff_time:
-                try:
-                    file_path.unlink()
-                    print(t('deleted_old_report').format(file_path))
-                except Exception as e:
-                    print(t('delete_failed').format(file_path, e))
+def cleanup_old_reports():
+    """
+    保留 reports 目录下最新5个子目录，static/reports 下最新5个 *_report.html 文件，其余自动删除。
+    """
+    import shutil
+    from pathlib import Path
+
+    # 1. 清理 reports 目录下的子目录，只保留最新5个
+    reports_dir = Path("reports")
+    if reports_dir.exists():
+        subdirs = [d for d in reports_dir.iterdir() if d.is_dir()]
+        subdirs_sorted = sorted(subdirs, key=lambda d: d.stat().st_mtime, reverse=True)
+        for old_dir in subdirs_sorted[5:]:
+            try:
+                shutil.rmtree(old_dir)
+                print(f"🗑️  已删除旧报告目录: {old_dir}")
+            except Exception as e:
+                print(f"⚠️  删除报告目录失败: {old_dir} - {e}")
+
+    # 2. 清理 static/reports 目录下的 *_report.html 文件，只保留最新5个
+    static_reports_dir = Path(__file__).parent / "static" / "reports"
+    if static_reports_dir.exists():
+        html_files = [f for f in static_reports_dir.glob("*_report.html") if f.is_file()]
+        html_files_sorted = sorted(html_files, key=lambda f: f.stat().st_mtime, reverse=True)
+        for old_file in html_files_sorted[5:]:
+            try:
+                old_file.unlink()
+                print(f"🗑️  已删除旧静态报告: {old_file}")
+            except Exception as e:
+                print(f"⚠️  删除静态报告失败: {old_file} - {e}")
 
 def generate_vote_distribution_chart(distribution_data):
     """生成投票分布饼图并返回base64编码的图片"""
@@ -1527,8 +1547,8 @@ def main():
             print(f"   2. 使用 --cumulative 参数分析所有历史数据")
             print(f"   3. 等待新的投票数据生成")
             print(f"\n🔄 示例命令:")
-            print(f"   python generate_report.py --force")
-            print(f"   python generate_report.py --cumulative")
+            print(f"   python scripts_py/generate_report.py --force")
+            print(f"   python scripts_py/generate_report.py --cumulative")
             
             if args.check_only:
                 print(f"\n✅ 状态检查完成")
@@ -1548,16 +1568,6 @@ def main():
     else:
         log_file = None  # 累积分析不需要单一日志文件
     
-    # 创建时间戳
-    timestamp = datetime.now().strftime('%Y-%m-%d_%H%M%S')
-    
-    # 创建归档目录
-    reports_dir = Path("reports")
-    reports_dir.mkdir(exist_ok=True)
-    
-    archive_dir = reports_dir / timestamp
-    archive_dir.mkdir(exist_ok=True)
-    
     # 创建logs_archive目录
     logs_archive_dir = Path("logs_archive")
     logs_archive_dir.mkdir(exist_ok=True)
@@ -1575,17 +1585,10 @@ def main():
 
 建议：如需长期归档，可定期备份本目录。
 ''')
-
-    # 复制日志文件到归档目录
-    if not args.cumulative:
-        shutil.copy2(log_file, archive_dir / 'raw_log.json')
     
-    # 计算static目录路径（在改变工作目录之前）
-    static_reports_dir = Path(__file__).parent / "static" / "reports"
+    # 计算static目录路径
+    static_reports_dir = Path(__file__).parent.parent / "static" / "reports"
     static_reports_dir.mkdir(parents=True, exist_ok=True)
-    
-    # 切换到归档目录
-    os.chdir(archive_dir)
     
     # 分析数据
     if args.cumulative:
@@ -1595,7 +1598,6 @@ def main():
             print(t('cumulative_analysis_failed'))
             sys.exit(1)
     else:
-        # 在分析函数中设置强制模式
         analyze_vote_data._force_mode = args.force
         vote_rows, elo_rows, distribution_data = analyze_vote_data(log_file)
         if not vote_rows or not elo_rows or not distribution_data:
@@ -1613,16 +1615,23 @@ def main():
         if summary_report:
             reports_generated.append('summary.md')
     
-    # 创建归档说明文件
-    create_archive_readme(archive_dir, reports_generated)
-    
     # === 自动复制到 static/reports/ 目录 ===
     try:
-        # 直接复制生成的报告文件
+        # 需要同步的所有结果文件
+        result_files = [
+            "vote_analysis.csv",
+            "elo_rankings.csv",
+            "vote_distribution.json",
+            "report.html",
+            "summary.md"
+        ]
+        for fname in result_files:
+            src = Path(fname)
+            if src.exists():
+                shutil.copy2(src, static_reports_dir / fname)
+        # 单独提示 report.html
         actual_report_path = Path("report.html")
         if actual_report_path.exists():
-            # 复制为最新报告
-            shutil.copy2(actual_report_path, static_reports_dir / "report.html")
             print(t('copied_to_static'))
         else:
             print(t('report_not_found').format(actual_report_path.absolute()))
@@ -1631,23 +1640,20 @@ def main():
     
     # 清理旧报告
     if not args.no_cleanup:
-        cleanup_old_reports(args.cleanup_days)
+        cleanup_old_reports()
     
     # 输出结果
     print("\n" + t('separator'))
     print(t('report_complete'))
-    print(t('archive_dir').format(archive_dir.absolute()))
     print(t('generated_files'))
     for report in reports_generated:
-        print(f"  - {archive_dir / report}")
-    print(f"  - {archive_dir / 'vote_analysis.csv'}")
-    print(f"  - {archive_dir / 'elo_rankings.csv'}")
-    print(f"  - {archive_dir / 'vote_distribution.json'}")
-    if not args.cumulative:
-        print(f"  - {archive_dir / 'raw_log.json'}")
-    print(f"  - {archive_dir / 'README.txt'}")
+        print(f"  - {Path(report).absolute()}")
+    print(f"  - {Path('vote_analysis.csv').absolute()}")
+    print(f"  - {Path('elo_rankings.csv').absolute()}")
+    print(f"  - {Path('vote_distribution.json').absolute()}")
+    print(f"  - {logs_archive_dir / 'README.txt'}")
     if 'report.html' in reports_generated:
-        print(f"\n{t('view_html_report').format(archive_dir / 'report.html')}")
+        print(f"\n{t('view_html_report').format(static_reports_dir / 'report.html')}")
     
     analysis_type = "累积历史数据分析" if args.cumulative else "单一日志文件分析"
     print(f"\n📊 分析类型: {analysis_type}")

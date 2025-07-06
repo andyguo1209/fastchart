@@ -14,8 +14,8 @@ import argparse
 def get_today_log_file():
     """获取当天的日志文件"""
     today = datetime.now().strftime('%Y-%m-%d')
-    log_file = f"{today}-conv.json"
-    
+    log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs_archive')
+    log_file = os.path.join(log_dir, f"{today}-conv.json")
     if os.path.exists(log_file):
         return log_file
     else:

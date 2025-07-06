@@ -12,7 +12,7 @@ import requests
 from fastchat.utils import build_logger
 
 
-logger = build_logger("gradio_web_server", "gradio_web_server.log")
+logger = build_logger("gradio_web_server", "logs/gradio_web_server.log")
 
 
 def get_api_provider_stream_iter(

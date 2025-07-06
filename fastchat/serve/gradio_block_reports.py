@@ -30,7 +30,7 @@ def run_generate_report(force_refresh=False):
                     print(f"⚠️  清除缓存文件失败: {e}")
         
         # 构建命令参数
-        cmd_args = ['python', 'generate_report.py']
+        cmd_args = ['python', 'scripts_py/generate_report.py']
         
         if force_refresh:
             # 强制刷新模式：使用累积分析确保获取最新数据
@@ -105,6 +105,13 @@ def run_generate_report(force_refresh=False):
 
 def generate_html_report(force_refresh=False):
     """生成FastChat投票分析HTML报告"""
+    vote_data = {'leftvote': 0, 'rightvote': 0, 'tievote': 0}
+    model_data = {
+        'labels': '["Model A", "Model B"]',
+        'winRates': '[50, 50]',
+        'barColors': '["rgba(40, 167, 69, 0.8)", "rgba(102, 126, 234, 0.8)"]',
+        'borderColors': '["rgba(40, 167, 69, 1)", "rgba(102, 126, 234, 1)"]'
+    }
     # 先运行报告生成
     status_msg, report_path = run_generate_report(force_refresh=force_refresh)
     
@@ -627,6 +634,13 @@ def extract_model_data_from_html(html_content):
 
 def refresh_latest_report():
     """刷新最新报告（不重新生成）"""
+    vote_data = {'leftvote': 0, 'rightvote': 0, 'tievote': 0}
+    model_data = {
+        'labels': '["Model A", "Model B"]',
+        'winRates': '[50, 50]',
+        'barColors': '["rgba(40, 167, 69, 0.8)", "rgba(102, 126, 234, 0.8)"]',
+        'borderColors': '["rgba(40, 167, 69, 1)", "rgba(102, 126, 234, 1)"]'
+    }
     try:
         # 获取项目根目录路径
         current_dir = Path(__file__).parent

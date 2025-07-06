@@ -45,7 +45,7 @@ from fastchat.utils import (
     load_image,
 )
 
-logger = build_logger("gradio_web_server", "gradio_web_server.log")
+logger = build_logger("gradio_web_server", "logs/gradio_web_server.log")
 
 headers = {"User-Agent": "FastChat Client"}
 
@@ -195,13 +195,15 @@ def set_global_vars(
 def get_conv_log_filename(is_vision=False, has_csam_image=False):
     t = datetime.datetime.now()
     conv_log_filename = f"{t.year}-{t.month:02d}-{t.day:02d}-conv.json"
+    log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../logs_archive')
+    log_dir = os.path.abspath(log_dir)
+    os.makedirs(log_dir, exist_ok=True)
     if is_vision and not has_csam_image:
-        name = os.path.join(LOGDIR, f"vision-tmp-{conv_log_filename}")
+        name = os.path.join(log_dir, f"vision-tmp-{conv_log_filename}")
     elif is_vision and has_csam_image:
-        name = os.path.join(LOGDIR, f"vision-csam-{conv_log_filename}")
+        name = os.path.join(log_dir, f"vision-csam-{conv_log_filename}")
     else:
-        name = os.path.join(LOGDIR, conv_log_filename)
-
+        name = os.path.join(log_dir, conv_log_filename)
     return name
 
 

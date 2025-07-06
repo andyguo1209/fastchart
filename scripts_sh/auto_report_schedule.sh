@@ -24,7 +24,7 @@ fi
 
 # 运行报告生成脚本
 echo "$(date '+%Y-%m-%d %H:%M:%S') - 正在生成报告..." >> "$LOG_FILE"
-python generate_report.py >> "$LOG_FILE" 2>&1
+python scripts_py/generate_report.py >> "$LOG_FILE" 2>&1
 
 # 检查执行结果
 if [ $? -eq 0 ]; then

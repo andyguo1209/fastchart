@@ -48,7 +48,7 @@ from fastchat.utils import (
     parse_gradio_auth_creds,
 )
 
-logger = build_logger("gradio_web_server_multi", "gradio_web_server_multi.log")
+logger = build_logger("gradio_web_server_multi", "logs/gradio_web_server_multi.log")
 
 
 def build_visualizer():

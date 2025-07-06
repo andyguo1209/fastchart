@@ -12,7 +12,7 @@ echo "当前项目目录: $SCRIPT_DIR"
 echo ""
 
 # 检查必要文件是否存在
-if [[ ! -f "$SCRIPT_DIR/generate_report.py" ]]; then
+if [[ ! -f "$SCRIPT_DIR/scripts_py/generate_report.py" ]]; then
     echo "❌ 错误: 未找到 generate_report.py 文件"
     exit 1
 fi
@@ -23,7 +23,7 @@ if [[ ! -f "$SCRIPT_DIR/auto_report_schedule.sh" ]]; then
 fi
 
 # 确保脚本有执行权限
-chmod +x "$SCRIPT_DIR/generate_report.py"
+chmod +x "$SCRIPT_DIR/scripts_py/generate_report.py"
 chmod +x "$SCRIPT_DIR/auto_report_schedule.sh"
 
 echo "✅ 脚本权限检查完成"
