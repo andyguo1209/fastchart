@@ -98,29 +98,57 @@ block_css = """
     font-size: 90% !important;
 }
 
+/* Hide or minimize only "清空对话" buttons in chatbot messages */
+.chatbot button[title*="清空对话"],
+.chatbot button[aria-label*="清空对话"],
+div[data-testid="chatbot"] button[title*="清空对话"],
+div[data-testid="chatbot"] button[aria-label*="清空对话"],
+/* Target buttons by accessibility name */
+.chatbot button[aria-describedby*="清空对话"],
+.chatbot button[name*="清空对话"],
+div[data-testid="chatbot"] button[aria-describedby*="清空对话"],
+div[data-testid="chatbot"] button[name*="清空对话"],
+/* Target by button content/text */
+.chatbot button:has-text("清空对话"),
+.chatbot button:contains("清空对话"),
+div[data-testid="chatbot"] button:has-text("清空对话"),
+div[data-testid="chatbot"] button:contains("清空对话") {
+    /* Option 1: Make button smaller and less prominent */
+    width: 20px !important;
+    height: 20px !important;
+    padding: 2px !important;
+    font-size: 10px !important;
+    opacity: 0.3 !important;
+    transform: scale(0.6) !important;
+    margin: 0 !important;
+    /* Option 2: Completely hide - uncomment below and comment above if you prefer */
+    /* display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important; */
+}
+
 /* HKGAI Branding Styles */
-#notice_markdown {
-    font-size: 104%
+#notice_markdown h1 {
+    color: #1976D2;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
-#notice_markdown .hkgai-header h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin: 0;
-    line-height: 1.2;
+
+#notice_markdown h2 {
     color: var(--body-text-color);
+    text-align: center;
+    font-weight: 600;
 }
-#notice_markdown .hkgai-header h2 {
-    font-size: 1.25rem;
-    font-weight: 400;
-    margin: 0.5rem 0 0 0;
-    color: var(--body-text-color);
-}
+
 .hkgai-header {
     background: var(--background-fill-primary);
     border: 1px solid var(--border-color-primary);
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -147,7 +175,7 @@ block_css = """
     display: inline-block;
     width: 7px;
     height: 1em;
-    background-color: #e2e8f0;
+    background-color: white;
     vertical-align: middle;
     animation: blink 1s infinite;
 }

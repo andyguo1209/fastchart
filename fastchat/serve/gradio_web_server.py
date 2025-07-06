@@ -678,6 +678,344 @@ block_css = """
     font-size: 90% !important;
 }
 
+/* Hide or minimize only "清空对话" buttons in chatbot messages */
+.chatbot button[title*="清空对话"],
+.chatbot button[aria-label*="清空对话"],
+div[data-testid="chatbot"] button[title*="清空对话"],
+div[data-testid="chatbot"] button[aria-label*="清空对话"],
+/* Target buttons by accessibility name */
+.chatbot button[aria-describedby*="清空对话"],
+.chatbot button[name*="清空对话"],
+div[data-testid="chatbot"] button[aria-describedby*="清空对话"],
+div[data-testid="chatbot"] button[name*="清空对话"],
+/* Target by button content/text */
+.chatbot button:has-text("清空对话"),
+.chatbot button:contains("清空对话"),
+div[data-testid="chatbot"] button:has-text("清空对话"),
+div[data-testid="chatbot"] button:contains("清空对话") {
+    /* Option 1: Make button smaller and less prominent */
+    width: 20px !important;
+    height: 20px !important;
+    padding: 2px !important;
+    font-size: 10px !important;
+    opacity: 0.3 !important;
+    transform: scale(0.6) !important;
+    margin: 0 !important;
+    /* Option 2: Completely hide - uncomment below and comment above if you prefer */
+    /* display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important; */
+}
+
+/* Hide image-related buttons in MultimodalTextbox */
+/* Hide delete/remove buttons for uploaded images */
+.multimodal-textbox button[title*="delete"],
+.multimodal-textbox button[title*="Delete"],
+.multimodal-textbox button[title*="remove"],
+.multimodal-textbox button[title*="Remove"],
+.multimodal-textbox button[title*="删除"],
+.multimodal-textbox button[title*="清除"],
+.multimodal-textbox button[aria-label*="delete"],
+.multimodal-textbox button[aria-label*="Delete"],
+.multimodal-textbox button[aria-label*="remove"],
+.multimodal-textbox button[aria-label*="Remove"],
+.multimodal-textbox button[aria-label*="删除"],
+.multimodal-textbox button[aria-label*="清除"],
+/* Target MultimodalTextbox by data-testid */
+div[data-testid*="multimodal"] button[title*="delete"],
+div[data-testid*="multimodal"] button[title*="Delete"],
+div[data-testid*="multimodal"] button[title*="remove"],
+div[data-testid*="multimodal"] button[title*="Remove"],
+div[data-testid*="multimodal"] button[title*="删除"],
+div[data-testid*="multimodal"] button[title*="清除"],
+div[data-testid*="multimodal"] button[aria-label*="delete"],
+div[data-testid*="multimodal"] button[aria-label*="Delete"],
+div[data-testid*="multimodal"] button[aria-label*="remove"],
+div[data-testid*="multimodal"] button[aria-label*="Remove"],
+div[data-testid*="multimodal"] button[aria-label*="删除"],
+div[data-testid*="multimodal"] button[aria-label*="清除"],
+/* Target by element ID */
+#input_box button[title*="delete"],
+#input_box button[title*="Delete"],
+#input_box button[title*="remove"],
+#input_box button[title*="Remove"],
+#input_box button[title*="删除"],
+#input_box button[title*="清除"],
+#input_box button[aria-label*="delete"],
+#input_box button[aria-label*="Delete"],
+#input_box button[aria-label*="remove"],
+#input_box button[aria-label*="Remove"],
+#input_box button[aria-label*="删除"],
+#input_box button[aria-label*="清除"],
+/* Target buttons with close/x icons */
+.multimodal-textbox button svg[data-testid="close-icon"],
+.multimodal-textbox button svg[data-testid="x-icon"],
+div[data-testid*="multimodal"] button svg[data-testid="close-icon"],
+div[data-testid*="multimodal"] button svg[data-testid="x-icon"],
+#input_box button svg[data-testid="close-icon"],
+#input_box button svg[data-testid="x-icon"],
+/* Target buttons containing close/x icons */
+.multimodal-textbox button:has(svg[data-testid="close-icon"]),
+.multimodal-textbox button:has(svg[data-testid="x-icon"]),
+div[data-testid*="multimodal"] button:has(svg[data-testid="close-icon"]),
+div[data-testid*="multimodal"] button:has(svg[data-testid="x-icon"]),
+#input_box button:has(svg[data-testid="close-icon"]),
+#input_box button:has(svg[data-testid="x-icon"]) {
+    /* Option 1: Make button smaller and less prominent */
+    width: 20px !important;
+    height: 20px !important;
+    padding: 2px !important;
+    font-size: 10px !important;
+    opacity: 0.3 !important;
+    transform: scale(0.6) !important;
+    margin: 0 !important;
+    /* Option 2: Completely hide - uncomment below and comment above if you prefer */
+    /* display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important; */
+}
+
+/* Input box styling for better visual feedback */
+#input_box {
+    border: 2px solid #4f46e5 !important;
+    border-radius: 16px !important;
+    padding: 0 !important;
+    font-size: 16px !important;
+    background: linear-gradient(135deg, var(--input-background-fill) 0%, rgba(79, 70, 229, 0.05) 100%) !important;
+    color: var(--body-text-color) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15), 0 2px 4px rgba(0,0,0,0.1) !important;
+    line-height: 1.5 !important;
+    resize: none !important;
+    overflow: hidden !important;
+    position: relative !important;
+    min-height: 64px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Add a subtle glow effect */
+#input_box::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -2px !important;
+    left: -2px !important;
+    right: -2px !important;
+    bottom: -2px !important;
+    background: linear-gradient(45deg, #4f46e5, #7c3aed, #ec4899, #f59e0b) !important;
+    border-radius: 18px !important;
+    z-index: -1 !important;
+    opacity: 0.6 !important;
+    filter: blur(8px) !important;
+    animation: rainbow-glow 3s ease-in-out infinite alternate !important;
+}
+
+@keyframes rainbow-glow {
+    0% { opacity: 0.6; filter: blur(8px) hue-rotate(0deg); }
+    100% { opacity: 0.8; filter: blur(12px) hue-rotate(30deg); }
+}
+
+/* Target the actual input/textarea element inside the input box */
+#input_box textarea, #input_box input {
+    border: none !important;
+    background: transparent !important;
+    padding: 16px 20px !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    color: var(--body-text-color) !important;
+    border-radius: 16px !important;
+    resize: none !important;
+    font-weight: 500 !important;
+    min-height: 32px !important;
+    height: auto !important;
+    flex: 1 !important;
+}
+
+/* Hide the inner container that creates the double border */
+#input_box > div {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border-radius: 16px !important;
+}
+
+/* Send button alignment */
+button[value="发送"] {
+    height: 64px !important;
+    border-radius: 16px !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    padding: 0 32px !important;
+    min-width: 120px !important;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3) !important;
+    transition: all 0.3s ease !important;
+    margin-left: 12px !important;
+}
+
+button[value="发送"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4) !important;
+}
+
+/* Button row styling - make buttons larger and centered */
+#buttons, [id*="button"] {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 16px !important;
+    margin: 20px 0 !important;
+}
+
+/* General button styling - make all buttons larger */
+button {
+    height: 48px !important;
+    border-radius: 12px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    padding: 0 24px !important;
+    min-width: 140px !important;
+    transition: all 0.3s ease !important;
+    border: 2px solid transparent !important;
+}
+
+/* Specific button styling for different types */
+button[value*="重新生成"] {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+
+button[value*="重新生成"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4) !important;
+}
+
+button[value*="清除历史"] {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
+}
+
+button[value*="清除历史"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4) !important;
+}
+
+/* File upload button styling (for multimodal versions) */
+button[value*="上传"], button[value*="Upload"], .upload-button {
+    height: 56px !important;
+    border-radius: 16px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    padding: 0 28px !important;
+    min-width: 160px !important;
+    background: linear-gradient(135deg, #ec4899 0%, #be185d 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+button[value*="上传"]:hover, button[value*="Upload"]:hover, .upload-button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4) !important;
+}
+
+/* Input and button container alignment */
+.gradio-container .block.gradio-row {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+/* Multimodal textbox styling (for file upload versions) */
+.multimodal-textbox, [id*="multimodal"] {
+    border: 2px solid #4f46e5 !important;
+    border-radius: 16px !important;
+    padding: 12px 16px !important;
+    font-size: 16px !important;
+    background: linear-gradient(135deg, var(--input-background-fill) 0%, rgba(79, 70, 229, 0.05) 100%) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15) !important;
+}
+
+.multimodal-textbox:focus-within, [id*="multimodal"]:focus-within {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2), 0 6px 20px rgba(79, 70, 229, 0.25) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Center the button rows */
+div[id*="button"], .button-row {
+    display: flex !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    margin: 24px 0 !important;
+}
+
+/* Disabled button styling */
+button:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+button:disabled:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Remove the problematic row alignment rules */
+#input_box, button[value="发送"] {
+    box-sizing: border-box !important;
+}
+
+/* Input row styling for proper alignment */
+#input_row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin: 20px 0 !important;
+    padding: 0 20px !important;
+    justify-content: center !important;
+}
+
+#input_box:focus-within {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2), 0 6px 20px rgba(79, 70, 229, 0.25) !important;
+    transform: translateY(-1px) !important;
+}
+
+#input_box::placeholder, #input_box textarea::placeholder, #input_box input::placeholder {
+    color: rgba(156, 163, 175, 0.8) !important;
+    font-weight: 400 !important;
+    font-style: italic !important;
+}
+
+/* Input box ready state - subtle glow effect when ready for input */
+#input_box.ready-for-input {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2), 0 2px 8px rgba(0,0,0,0.1) !important;
+}
+
+/* Input box sending state - subtle loading indicator */
+#input_box.sending {
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2), 0 2px 8px rgba(0,0,0,0.1) !important;
+    opacity: 0.8 !important;
+}
+
 /* HKGAI Branding Styles */
 #notice_markdown h1 {
     color: #1976D2;
@@ -796,6 +1134,75 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.classList.add('dark');
         }
     }, 1000);
+    
+    // Input box state management
+    setTimeout(function() {
+        const inputBox = document.getElementById('input_box');
+        const sendBtn = document.querySelector('button[value="发送"]');
+        
+        if (inputBox) {
+            // Add ready-for-input class by default
+            inputBox.classList.add('ready-for-input');
+            
+            // Monitor for form submission or send button click
+            const handleSending = function() {
+                inputBox.classList.remove('ready-for-input');
+                inputBox.classList.add('sending');
+            };
+            
+            // Monitor for when input is ready again
+            const handleReady = function() {
+                setTimeout(function() {
+                    inputBox.classList.remove('sending');
+                    inputBox.classList.add('ready-for-input');
+                }, 1000); // Small delay to show the sending state
+            };
+            
+            // Listen for form submission
+            const form = inputBox.closest('form');
+            if (form) {
+                form.addEventListener('submit', handleSending);
+            }
+            
+            // Listen for send button click
+            if (sendBtn) {
+                sendBtn.addEventListener('click', handleSending);
+            }
+            
+            // Listen for Enter key press
+            inputBox.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    handleSending();
+                }
+            });
+            
+            // Monitor for chatbot updates (when response is received)
+            const chatbot = document.getElementById('chatbot');
+            if (chatbot) {
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                            // Check if new content was added to chatbot
+                            handleReady();
+                        }
+                    });
+                });
+                observer.observe(chatbot, { childList: true, subtree: true });
+            }
+            
+            // Also monitor for input value changes (when input is cleared)
+            const inputObserver = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                        if (inputBox.value === '') {
+                            handleReady();
+                        }
+                    }
+                });
+            });
+            inputObserver.observe(inputBox, { attributes: true });
+        }
+    }, 1500);
 });
 </script>
 """
@@ -895,21 +1302,21 @@ def build_single_model_ui(models, add_promotion_links=False):
                 {"left": r"\[", "right": r"\]", "display": True},
             ],
         )
-    with gr.Row():
+    with gr.Row(elem_id="input_row"):
         textbox = gr.Textbox(
             show_label=False,
             placeholder="👉 请输入您的问题并按回车键",
             elem_id="input_box",
         )
-        send_btn = gr.Button(value="发送", variant="primary", scale=0)
+        send_btn = gr.Button(value="发送", variant="primary", scale=0, elem_id="send_btn")
 
     with gr.Row() as button_row:
         # Hide voting buttons to keep interface clean
         upvote_btn = gr.Button(value="👍  赞", interactive=False, visible=False)
         downvote_btn = gr.Button(value="👎  踩", interactive=False, visible=False)
         flag_btn = gr.Button(value="⚠️  举报", interactive=False, visible=False)
-        regenerate_btn = gr.Button(value="🔄  重新生成", interactive=False)
-        clear_btn = gr.Button(value="🗑️  清除历史", interactive=False)
+        regenerate_btn = gr.Button(value="🔄  重新生成", interactive=False, elem_id="regenerate_btn")
+        clear_btn = gr.Button(value="🗑️  清除历史", interactive=False, elem_id="clear_btn")
 
     with gr.Accordion("Parameters", open=False, visible=False) as parameter_row:
         temperature = gr.Slider(

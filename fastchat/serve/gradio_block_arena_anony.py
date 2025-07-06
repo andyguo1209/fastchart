@@ -706,6 +706,36 @@ block_css = """
     font-size: 90% !important;
 }
 
+/* Hide or minimize only "清空对话" buttons in chatbot messages */
+.chatbot button[title*="清空对话"],
+.chatbot button[aria-label*="清空对话"],
+div[data-testid="chatbot"] button[title*="清空对话"],
+div[data-testid="chatbot"] button[aria-label*="清空对话"],
+/* Target buttons by accessibility name */
+.chatbot button[aria-describedby*="清空对话"],
+.chatbot button[name*="清空对话"],
+div[data-testid="chatbot"] button[aria-describedby*="清空对话"],
+div[data-testid="chatbot"] button[name*="清空对话"],
+/* Target by button content/text */
+.chatbot button:has-text("清空对话"),
+.chatbot button:contains("清空对话"),
+div[data-testid="chatbot"] button:has-text("清空对话"),
+div[data-testid="chatbot"] button:contains("清空对话") {
+    /* Option 1: Make button smaller and less prominent */
+    width: 20px !important;
+    height: 20px !important;
+    padding: 2px !important;
+    font-size: 10px !important;
+    opacity: 0.3 !important;
+    transform: scale(0.6) !important;
+    margin: 0 !important;
+    /* Option 2: Completely hide - uncomment below and comment above if you prefer */
+    /* display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important; */
+}
+
 /* HKGAI Branding Styles */
 #notice_markdown h1 {
     color: #1976D2;

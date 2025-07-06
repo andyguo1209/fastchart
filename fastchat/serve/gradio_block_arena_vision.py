@@ -96,6 +96,105 @@ block_css = """
     font-size: 90% !important;
 }
 
+/* Hide or minimize only "清空对话" buttons in chatbot messages */
+.chatbot button[title*="清空对话"],
+.chatbot button[aria-label*="清空对话"],
+div[data-testid="chatbot"] button[title*="清空对话"],
+div[data-testid="chatbot"] button[aria-label*="清空对话"],
+/* Target buttons by accessibility name */
+.chatbot button[aria-describedby*="清空对话"],
+.chatbot button[name*="清空对话"],
+div[data-testid="chatbot"] button[aria-describedby*="清空对话"],
+div[data-testid="chatbot"] button[name*="清空对话"],
+/* Target by button content/text */
+.chatbot button:has-text("清空对话"),
+.chatbot button:contains("清空对话"),
+div[data-testid="chatbot"] button:has-text("清空对话"),
+div[data-testid="chatbot"] button:contains("清空对话") {
+    /* Option 1: Make button smaller and less prominent */
+    width: 20px !important;
+    height: 20px !important;
+    padding: 2px !important;
+    font-size: 10px !important;
+    opacity: 0.3 !important;
+    transform: scale(0.6) !important;
+    margin: 0 !important;
+    /* Option 2: Completely hide - uncomment below and comment above if you prefer */
+    /* display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important; */
+}
+
+/* Hide image-related buttons in MultimodalTextbox */
+/* Hide delete/remove buttons for uploaded images */
+.multimodal-textbox button[title*="delete"],
+.multimodal-textbox button[title*="Delete"],
+.multimodal-textbox button[title*="remove"],
+.multimodal-textbox button[title*="Remove"],
+.multimodal-textbox button[title*="删除"],
+.multimodal-textbox button[title*="清除"],
+.multimodal-textbox button[aria-label*="delete"],
+.multimodal-textbox button[aria-label*="Delete"],
+.multimodal-textbox button[aria-label*="remove"],
+.multimodal-textbox button[aria-label*="Remove"],
+.multimodal-textbox button[aria-label*="删除"],
+.multimodal-textbox button[aria-label*="清除"],
+/* Target MultimodalTextbox by data-testid */
+div[data-testid*="multimodal"] button[title*="delete"],
+div[data-testid*="multimodal"] button[title*="Delete"],
+div[data-testid*="multimodal"] button[title*="remove"],
+div[data-testid*="multimodal"] button[title*="Remove"],
+div[data-testid*="multimodal"] button[title*="删除"],
+div[data-testid*="multimodal"] button[title*="清除"],
+div[data-testid*="multimodal"] button[aria-label*="delete"],
+div[data-testid*="multimodal"] button[aria-label*="Delete"],
+div[data-testid*="multimodal"] button[aria-label*="remove"],
+div[data-testid*="multimodal"] button[aria-label*="Remove"],
+div[data-testid*="multimodal"] button[aria-label*="删除"],
+div[data-testid*="multimodal"] button[aria-label*="清除"],
+/* Target by element ID */
+#input_box button[title*="delete"],
+#input_box button[title*="Delete"],
+#input_box button[title*="remove"],
+#input_box button[title*="Remove"],
+#input_box button[title*="删除"],
+#input_box button[title*="清除"],
+#input_box button[aria-label*="delete"],
+#input_box button[aria-label*="Delete"],
+#input_box button[aria-label*="remove"],
+#input_box button[aria-label*="Remove"],
+#input_box button[aria-label*="删除"],
+#input_box button[aria-label*="清除"],
+/* Target buttons with close/x icons */
+.multimodal-textbox button svg[data-testid="close-icon"],
+.multimodal-textbox button svg[data-testid="x-icon"],
+div[data-testid*="multimodal"] button svg[data-testid="close-icon"],
+div[data-testid*="multimodal"] button svg[data-testid="x-icon"],
+#input_box button svg[data-testid="close-icon"],
+#input_box button svg[data-testid="x-icon"],
+/* Target buttons containing close/x icons */
+.multimodal-textbox button:has(svg[data-testid="close-icon"]),
+.multimodal-textbox button:has(svg[data-testid="x-icon"]),
+div[data-testid*="multimodal"] button:has(svg[data-testid="close-icon"]),
+div[data-testid*="multimodal"] button:has(svg[data-testid="x-icon"]),
+#input_box button:has(svg[data-testid="close-icon"]),
+#input_box button:has(svg[data-testid="x-icon"]) {
+    /* Option 1: Make button smaller and less prominent */
+    width: 20px !important;
+    height: 20px !important;
+    padding: 2px !important;
+    font-size: 10px !important;
+    opacity: 0.3 !important;
+    transform: scale(0.6) !important;
+    margin: 0 !important;
+    /* Option 2: Completely hide - uncomment below and comment above if you prefer */
+    /* display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important; */
+}
+
 /* HKGAI Branding Styles */
 #notice_markdown h1 {
     color: #1976D2;
