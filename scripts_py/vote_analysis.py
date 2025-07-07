@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 FastChat 投票统计工具
-用于分析 Arena 模式的投票结果
+分析投票日志，生成模型对战统计报告
 """
 
 import json
@@ -10,6 +10,7 @@ from collections import defaultdict, Counter
 from datetime import datetime
 import argparse
 import os
+from pathlib import Path
 
 def load_vote_data(log_file):
     """加载投票数据"""
@@ -145,8 +146,13 @@ def main():
     model_performance = analyze_votes(votes)
     
     if args.export and model_performance:
-        # 导出模型表现数据
-        export_to_csv(model_performance, args.output)
+        # 创建 static/reports 目录
+        reports_dir = Path(__file__).parent.parent / 'static' / 'reports'
+        reports_dir.mkdir(parents=True, exist_ok=True)
+        
+        # 导出模型表现数据到 static/reports 目录
+        output_path = reports_dir / args.output
+        export_to_csv(model_performance, output_path)
         
         # 生成投票类型分布数据
         vote_types = Counter(vote['type'] for vote in votes)
@@ -157,9 +163,11 @@ def main():
             'bothbad_vote': vote_types.get('bothbad_vote', 0)
         }
         
-        with open('vote_distribution.json', 'w', encoding='utf-8') as f:
+        # 保存投票分布数据到 static/reports 目录
+        distribution_path = reports_dir / 'vote_distribution.json'
+        with open(distribution_path, 'w', encoding='utf-8') as f:
             json.dump(vote_distribution, f, ensure_ascii=False, indent=2)
-        print(f"投票分布数据已导出到: vote_distribution.json")
+        print(f"投票分布数据已导出到: {distribution_path}")
 
 if __name__ == "__main__":
     main() 

@@ -361,18 +361,21 @@ def analyze_cumulative_vote_data():
         
         # 读取生成的数据文件
         try:
-            # 读取投票分析数据 - 从当前工作目录读取（归档目录）
-            vote_file = Path('vote_analysis.csv')
+            # 读取投票分析数据 - 从 static/reports 目录读取
+            reports_dir = Path(__file__).parent.parent / 'static' / 'reports'
+            
+            # 读取投票分析数据
+            vote_file = reports_dir / 'vote_analysis.csv'
             with open(vote_file, 'r', encoding='utf-8') as f:
                 vote_data = f.read()
             
             # 读取ELO排名数据
-            elo_file = Path('elo_rankings.csv')
+            elo_file = reports_dir / 'elo_rankings.csv'
             with open(elo_file, 'r', encoding='utf-8') as f:
                 elo_data = f.read()
                 
             # 读取投票分布数据
-            distribution_file = Path('vote_distribution.json')
+            distribution_file = reports_dir / 'vote_distribution.json'
             with open(distribution_file, 'r', encoding='utf-8') as f:
                 distribution_data = json.load(f)
                 
@@ -431,20 +434,23 @@ def analyze_vote_data(log_file):
     cmd = f"python {main_dir}/elo_analysis_simple.py --log-file {log_file} --export"
     output = run_command(cmd, t('elo_analysis'))
     
-    # 读取生成的数据文件 - 从当前工作目录读取（归档目录）
+    # 读取生成的数据文件 - 从 static/reports 目录读取
     try:
+        # 获取 static/reports 目录路径
+        reports_dir = Path(__file__).parent.parent / 'static' / 'reports'
+        
         # 读取投票分析数据
-        vote_file = Path('vote_analysis.csv')
+        vote_file = reports_dir / 'vote_analysis.csv'
         with open(vote_file, 'r', encoding='utf-8') as f:
             vote_data = f.read()
         
         # 读取ELO排名数据
-        elo_file = Path('elo_rankings.csv')
+        elo_file = reports_dir / 'elo_rankings.csv'
         with open(elo_file, 'r', encoding='utf-8') as f:
             elo_data = f.read()
             
         # 读取投票分布数据
-        distribution_file = Path('vote_distribution.json')
+        distribution_file = reports_dir / 'vote_distribution.json'
         with open(distribution_file, 'r', encoding='utf-8') as f:
             distribution_data = json.load(f)
             
@@ -1219,11 +1225,15 @@ def create_report_html(data_source, vote_rows, elo_rows, distribution_data):
 </body>
 </html>"""
     
-    # 保存HTML文件 - 直接使用固定文件名
-    with open('report.html', 'w', encoding='utf-8') as f:
+    # 保存HTML文件到 static/reports 目录
+    reports_dir = Path(__file__).parent.parent / 'static' / 'reports'
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    
+    html_file_path = reports_dir / 'report.html'
+    with open(html_file_path, 'w', encoding='utf-8') as f:
         f.write(html_content)
     
-    print(t('report_generated').format('report.html'))
+    print(t('report_generated').format(html_file_path))
     return 'report.html'
 
 def create_summary_report():
@@ -1232,14 +1242,17 @@ def create_summary_report():
     
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
+    # 获取 static/reports 目录路径
+    reports_dir = Path(__file__).parent.parent / 'static' / 'reports'
+    
     try:
-        with open('vote_analysis.csv', 'r', encoding='utf-8') as f:
+        with open(reports_dir / 'vote_analysis.csv', 'r', encoding='utf-8') as f:
             vote_data = f.read()
         
-        with open('elo_rankings.csv', 'r', encoding='utf-8') as f:
+        with open(reports_dir / 'elo_rankings.csv', 'r', encoding='utf-8') as f:
             elo_data = f.read()
             
-        with open('vote_distribution.json', 'r', encoding='utf-8') as f:
+        with open(reports_dir / 'vote_distribution.json', 'r', encoding='utf-8') as f:
             distribution_data = json.load(f)
     except FileNotFoundError as e:
         print(t('data_file_missing').format(e))
@@ -1275,11 +1288,12 @@ def create_summary_report():
         summary_content += f"| {row['model']} | {row['total_battles']} | {row['wins']} | {row['losses']} | {row['ties']} | {win_rate:.2f}%% | {tie_rate:.2f}%% | {loss_rate:.2f}%% |\n"
     summary_content += f"\n## 分析结论\n- 本次分析共处理了 {distribution_data.get('leftvote', 0) + distribution_data.get('rightvote', 0) + distribution_data.get('tievote', 0) + distribution_data.get('bothbad_vote', 0)} 场对战\n- 参与模型数量: {len(vote_rows)} 个\n- 分析时间: {timestamp}\n\n---\n*此报告由自动化脚本生成，支持定时任务更新*\n"
     
-    # 保存摘要报告 - 直接使用固定文件名
-    with open('summary.md', 'w', encoding='utf-8') as f:
+    # 保存摘要报告到 static/reports 目录
+    summary_file_path = reports_dir / 'summary.md'
+    with open(summary_file_path, 'w', encoding='utf-8') as f:
         f.write(summary_content)
     
-    print(t('summary_generated').format('summary.md'))
+    print(t('summary_generated').format(summary_file_path))
     return 'summary.md'
 
 def cleanup_old_reports():
@@ -1615,29 +1629,6 @@ def main():
         if summary_report:
             reports_generated.append('summary.md')
     
-    # === 自动复制到 static/reports/ 目录 ===
-    try:
-        # 需要同步的所有结果文件
-        result_files = [
-            "vote_analysis.csv",
-            "elo_rankings.csv",
-            "vote_distribution.json",
-            "report.html",
-            "summary.md"
-        ]
-        for fname in result_files:
-            src = Path(fname)
-            if src.exists():
-                shutil.copy2(src, static_reports_dir / fname)
-        # 单独提示 report.html
-        actual_report_path = Path("report.html")
-        if actual_report_path.exists():
-            print(t('copied_to_static'))
-        else:
-            print(t('report_not_found').format(actual_report_path.absolute()))
-    except Exception as e:
-        print(t('copy_failed').format(e))
-    
     # 清理旧报告
     if not args.no_cleanup:
         cleanup_old_reports()
@@ -1647,10 +1638,10 @@ def main():
     print(t('report_complete'))
     print(t('generated_files'))
     for report in reports_generated:
-        print(f"  - {Path(report).absolute()}")
-    print(f"  - {Path('vote_analysis.csv').absolute()}")
-    print(f"  - {Path('elo_rankings.csv').absolute()}")
-    print(f"  - {Path('vote_distribution.json').absolute()}")
+        print(f"  - {static_reports_dir / Path(report).name}")
+    print(f"  - {static_reports_dir / 'vote_analysis.csv'}")
+    print(f"  - {static_reports_dir / 'elo_rankings.csv'}")
+    print(f"  - {static_reports_dir / 'vote_distribution.json'}")
     print(f"  - {logs_archive_dir / 'README.txt'}")
     if 'report.html' in reports_generated:
         print(f"\n{t('view_html_report').format(static_reports_dir / 'report.html')}")

@@ -10,6 +10,7 @@ import numpy as np
 from collections import defaultdict
 import argparse
 import os
+from pathlib import Path
 
 class ELOCalculator:
     def __init__(self, k_factor=32, initial_rating=1000):
@@ -196,7 +197,13 @@ def main():
         print_results(results)
         
         if args.export:
-            export_results(results, args.output)
+            # 创建 static/reports 目录
+            reports_dir = Path(__file__).parent.parent / 'static' / 'reports'
+            reports_dir.mkdir(parents=True, exist_ok=True)
+            
+            # 导出结果到 static/reports 目录
+            output_path = reports_dir / args.output
+            export_results(results, output_path)
     else:
         print("没有找到有效的对战数据")
 

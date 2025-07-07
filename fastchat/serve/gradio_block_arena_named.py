@@ -357,7 +357,7 @@ def build_side_by_side_ui_named(models):
                         label=label,
                         elem_id=f"chatbot",
                         height=650,
-                        show_copy_button=True,
+                        show_copy_button=False,
                         latex_delimiters=[
                             {"left": "$", "right": "$", "display": False},
                             {"left": "$$", "right": "$$", "display": True},
@@ -387,7 +387,7 @@ def build_side_by_side_ui_named(models):
         send_btn = gr.Button(value="Send", variant="primary", scale=0)
 
     with gr.Row() as button_row:
-        clear_btn = gr.Button(value="🗑️  Clear history", interactive=False)
+        clear_btn = gr.Button(value="🗑️  Clear history", interactive=False, visible=False)
         regenerate_btn = gr.Button(value="🔄  Regenerate", interactive=False)
         share_btn = gr.Button(value="📷  Share")
 

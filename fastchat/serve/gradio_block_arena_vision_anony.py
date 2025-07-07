@@ -76,7 +76,7 @@ from fastchat.utils import (
     image_moderation_filter,
 )
 
-logger = build_logger("gradio_web_server_multi", "gradio_web_server_multi.log")
+logger = build_logger("gradio_web_server_multi", "logs/gradio_web_server_multi.log")
 
 num_sides = 2
 enable_moderation = False
@@ -719,18 +719,18 @@ div[data-testid="chatbot"] button[name*="清空对话"],
 div[data-testid="chatbot"] button:has-text("清空对话"),
 div[data-testid="chatbot"] button:contains("清空对话") {
     /* Option 1: Make button smaller and less prominent */
-    width: 20px !important;
+    /* width: 20px !important;
     height: 20px !important;
     padding: 2px !important;
     font-size: 10px !important;
     opacity: 0.3 !important;
     transform: scale(0.6) !important;
-    margin: 0 !important;
+    margin: 0 !important; */
     /* Option 2: Completely hide - uncomment below and comment above if you prefer */
-    /* display: none !important;
+    display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
-    pointer-events: none !important; */
+    pointer-events: none !important;
 }
 
 /* Hide image-related buttons in MultimodalTextbox */
@@ -788,18 +788,18 @@ div[data-testid*="multimodal"] button:has(svg[data-testid="x-icon"]),
 #input_box button:has(svg[data-testid="close-icon"]),
 #input_box button:has(svg[data-testid="x-icon"]) {
     /* Option 1: Make button smaller and less prominent */
-    width: 20px !important;
+    /* width: 20px !important;
     height: 20px !important;
     padding: 2px !important;
     font-size: 10px !important;
     opacity: 0.3 !important;
     transform: scale(0.6) !important;
-    margin: 0 !important;
+    margin: 0 !important; */
     /* Option 2: Completely hide - uncomment below and comment above if you prefer */
-    /* display: none !important;
+    display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
-    pointer-events: none !important; */
+    pointer-events: none !important;
 }
 
 /* HKGAI Branding Styles */

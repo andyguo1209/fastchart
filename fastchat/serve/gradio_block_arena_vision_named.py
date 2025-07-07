@@ -114,18 +114,18 @@ div[data-testid="chatbot"] button[name*="清空对话"],
 div[data-testid="chatbot"] button:has-text("清空对话"),
 div[data-testid="chatbot"] button:contains("清空对话") {
     /* Option 1: Make button smaller and less prominent */
-    width: 20px !important;
+    /* width: 20px !important;
     height: 20px !important;
     padding: 2px !important;
     font-size: 10px !important;
     opacity: 0.3 !important;
     transform: scale(0.6) !important;
-    margin: 0 !important;
+    margin: 0 !important; */
     /* Option 2: Completely hide - uncomment below and comment above if you prefer */
-    /* display: none !important;
+    display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
-    pointer-events: none !important; */
+    pointer-events: none !important;
 }
 
 /* HKGAI Branding Styles */
@@ -514,7 +514,7 @@ def build_side_by_side_vision_ui_named(context: Context, random_questions=None):
                                 label=label,
                                 elem_id=f"chatbot",
                                 height=650,
-                                show_copy_button=True,
+                                show_copy_button=False,
                                 latex_delimiters=[
                                     {"left": "$", "right": "$", "display": False},
                                     {"left": "$$", "right": "$$", "display": True},
@@ -561,7 +561,7 @@ def build_side_by_side_vision_ui_named(context: Context, random_questions=None):
             with open(random_questions, "r") as f:
                 vqa_samples = json.load(f)
             random_btn = gr.Button(value="🎲 Random Example", interactive=True)
-        clear_btn = gr.Button(value="🗑️  清除历史", interactive=False)
+        clear_btn = gr.Button(value="🗑️  清除历史", interactive=False, visible=False)
         regenerate_btn = gr.Button(value="🔄  重新生成", interactive=False)
         share_btn = gr.Button(value="📷  分享")
 

@@ -692,20 +692,56 @@ div[data-testid="chatbot"] button[name*="清空对话"],
 .chatbot button:has-text("清空对话"),
 .chatbot button:contains("清空对话"),
 div[data-testid="chatbot"] button:has-text("清空对话"),
-div[data-testid="chatbot"] button:contains("清空对话") {
+div[data-testid="chatbot"] button:contains("清空对话"),
+/* Additional comprehensive selectors for any delete/clear buttons */
+button[title*="清空对话"],
+button[aria-label*="清空对话"],
+button[name*="清空对话"],
+button:contains("清空对话"),
+*[role="button"][title*="清空对话"],
+*[role="button"][aria-label*="清空对话"],
+*[role="button"]:contains("清空对话"),
+/* Target by button text content */
+button:has-text("清空对话"),
+*[role="button"]:has-text("清空对话"),
+/* Target by class or data attributes */
+.clear-button,
+.delete-button,
+.remove-button,
+button[data-action*="clear"],
+button[data-action*="delete"],
+button[data-action*="remove"],
+/* More specific selectors */
+div button[title*="清空对话"],
+div button[aria-label*="清空对话"],
+div button:contains("清空对话"),
+/* Universal selectors for any element containing clear/delete text */
+*:contains("清空对话"),
+*[title*="清空对话"],
+*[aria-label*="清空对话"] {
     /* Option 1: Make button smaller and less prominent */
-    width: 20px !important;
+    /* width: 20px !important;
     height: 20px !important;
     padding: 2px !important;
     font-size: 10px !important;
     opacity: 0.3 !important;
     transform: scale(0.6) !important;
-    margin: 0 !important;
+    margin: 0 !important; */
     /* Option 2: Completely hide - uncomment below and comment above if you prefer */
-    /* display: none !important;
+    display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
-    pointer-events: none !important; */
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    z-index: -9999 !important;
 }
 
 /* Hide image-related buttons in MultimodalTextbox */
@@ -759,22 +795,20 @@ div[data-testid*="multimodal"] button svg[data-testid="x-icon"],
 .multimodal-textbox button:has(svg[data-testid="close-icon"]),
 .multimodal-textbox button:has(svg[data-testid="x-icon"]),
 div[data-testid*="multimodal"] button:has(svg[data-testid="close-icon"]),
-div[data-testid*="multimodal"] button:has(svg[data-testid="x-icon"]),
-#input_box button:has(svg[data-testid="close-icon"]),
-#input_box button:has(svg[data-testid="x-icon"]) {
+div[data-testid*="multimodal"] button:has(svg[data-testid="x-icon"]) {
     /* Option 1: Make button smaller and less prominent */
-    width: 20px !important;
+    /* width: 20px !important;
     height: 20px !important;
     padding: 2px !important;
     font-size: 10px !important;
     opacity: 0.3 !important;
     transform: scale(0.6) !important;
-    margin: 0 !important;
+    margin: 0 !important; */
     /* Option 2: Completely hide - uncomment below and comment above if you prefer */
-    /* display: none !important;
+    display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
-    pointer-events: none !important; */
+    pointer-events: none !important;
 }
 
 /* Input box styling for better visual feedback */
@@ -791,7 +825,7 @@ div[data-testid*="multimodal"] button:has(svg[data-testid="x-icon"]),
     resize: none !important;
     overflow: hidden !important;
     position: relative !important;
-    min-height: 64px !important;
+    min-height: 54px !important;
     display: flex !important;
     align-items: center !important;
 }
@@ -848,7 +882,7 @@ div[data-testid*="multimodal"] button:has(svg[data-testid="x-icon"]),
 
 /* Send button alignment */
 button[value="发送"] {
-    height: 64px !important;
+    height: 54px !important;
     border-radius: 16px !important;
     font-size: 18px !important;
     font-weight: 600 !important;
@@ -878,12 +912,12 @@ button[value="发送"]:hover {
 
 /* General button styling - make all buttons larger */
 button {
-    height: 48px !important;
+    height: 45px !important;
     border-radius: 12px !important;
     font-size: 16px !important;
     font-weight: 500 !important;
     padding: 0 24px !important;
-    min-width: 140px !important;
+    min-width: 100px !important;
     transition: all 0.3s ease !important;
     border: 2px solid transparent !important;
 }
@@ -1107,104 +1141,339 @@ a:hover {
         overflow-x: hidden;
     }
 }
+
+/* Additional comprehensive rules to hide all possible clear/delete buttons */
+/* This ensures buttons are hidden even if JavaScript doesn't execute */
+button[value*="清空对话"],
+button[title*="清空对话"],
+button[aria-label*="清空对话"],
+button[name*="清空对话"],
+*[role="button"][title*="清空对话"],
+*[role="button"][aria-label*="清空对话"],
+*[role="button"][name*="清空对话"],
+.clear-button,
+.delete-button,
+.remove-button,
+button[data-action*="clear"],
+button[data-action*="delete"],
+button[data-action*="remove"],
+/* Target by element content */
+button:contains("清空对话"),
+*[role="button"]:contains("清空对话"),
+/* Target by specific IDs and classes */
+#clear_btn,
+.clear-history-btn,
+.delete-conversation-btn,
+/* Target within specific containers */
+.chatbot button[title*="清空对话"],
+.chatbot button[aria-label*="清空对话"],
+.chatbot *[role="button"][title*="清空对话"],
+.chatbot *[role="button"][aria-label*="清空对话"],
+div[data-testid="chatbot"] button[title*="清空对话"],
+div[data-testid="chatbot"] button[aria-label*="清空对话"],
+div[data-testid="chatbot"] *[role="button"][title*="清空对话"],
+div[data-testid="chatbot"] *[role="button"][aria-label*="清空对话"],
+/* Universal selectors for any element containing clear/delete text */
+*[title*="清空对话"],
+*[aria-label*="清空对话"],
+*[name*="清空对话"],
+*[data-testid*="clear"],
+*[data-testid*="delete"],
+/* Target buttons with specific patterns */
+button[class*="clear"],
+button[class*="delete"],
+button[class*="remove"],
+*[role="button"][class*="clear"],
+*[role="button"][class*="delete"],
+*[role="button"][class*="remove"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    z-index: -9999 !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+}
+
+/* Force hide any button containing clear/delete text in Chinese */
+button:lang(zh)[title*="清空"],
+button:lang(zh)[aria-label*="清空"],
+button:lang(zh)[title*="删除"],
+button:lang(zh)[aria-label*="删除"],
+button:lang(zh-CN)[title*="清空"],
+button:lang(zh-CN)[aria-label*="清空"],
+button:lang(zh-CN)[title*="删除"],
+button:lang(zh-CN)[aria-label*="删除"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Additional fallback rules */
+[data-testid*="clear-button"],
+[data-testid*="delete-button"],
+[data-testid*="remove-button"],
+[aria-label*="clear conversation"],
+[aria-label*="delete conversation"],
+[aria-label*="remove conversation"],
+[title*="clear conversation"],
+[title*="delete conversation"],
+[title*="remove conversation"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Target specific button classes we've added */
+.hidden-clear-btn,
+button.hidden-clear-btn,
+#clear_btn.hidden-clear-btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    z-index: -9999 !important;
+}
+
+/* Force hide the clear button by ID */
+#clear_btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+}
+
+/* Copy button styling - completely hide copy buttons */
+button[title*="Copy message"],
+button[aria-label*="Copy message"],
+button[title*="复制消息"],
+button[aria-label*="复制消息"],
+button[title*="Copy"],
+button[aria-label*="Copy"],
+button[title*="复制"],
+button[aria-label*="复制"],
+.chatbot button[title*="Copy"],
+.chatbot button[aria-label*="Copy"],
+div[data-testid="chatbot"] button[title*="Copy"],
+div[data-testid="chatbot"] button[aria-label*="Copy"],
+/* Target copy buttons in chatbot messages */
+.chatbot .copy-button,
+.chatbot button[data-testid*="copy"],
+div[data-testid="chatbot"] .copy-button,
+div[data-testid="chatbot"] button[data-testid*="copy"],
+/* Target buttons with copy icons */
+button:has(svg[data-testid*="copy"]),
+button:has(svg[class*="copy"]),
+.chatbot button:has(svg[data-testid*="copy"]),
+.chatbot button:has(svg[class*="copy"]),
+/* Target by button content */
+button:contains("Copy"),
+button:contains("复制"),
+.chatbot button:contains("Copy"),
+.chatbot button:contains("复制") {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    z-index: -9999 !important;
+}
+
+/* Copy button hover effect - no longer needed since buttons are hidden */
+/*
+button[title*="Copy message"]:hover,
+button[aria-label*="Copy message"]:hover,
+button[title*="Copy"]:hover,
+button[aria-label*="Copy"]:hover,
+.chatbot button[title*="Copy"]:hover,
+.chatbot button[aria-label*="Copy"]:hover {
+    opacity: 0.8 !important;
+    transform: scale(0.85) !important;
+    background: rgba(0, 0, 0, 0.15) !important;
+}
+*/
 """
 
 # JavaScript to force dark mode on page load
 dark_mode_js = """
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Wait for Gradio to load
-    setTimeout(function() {
-        // Try to find and click the dark mode toggle button
-        const darkModeButton = document.querySelector('button[aria-label="Dark mode"]') || 
-                             document.querySelector('button[title="Dark mode"]') ||
-                             document.querySelector('button[data-testid="theme-toggle"]') ||
-                             document.querySelector('.theme-toggle') ||
-                             document.querySelector('[data-theme-toggle]');
-        
-        if (darkModeButton) {
-            // Check if we're not already in dark mode
-            if (!document.documentElement.classList.contains('dark') && 
-                !document.body.classList.contains('dark')) {
-                darkModeButton.click();
-            }
-        } else {
-            // Fallback: manually add dark mode class
-            document.documentElement.classList.add('dark');
-            document.body.classList.add('dark');
-        }
-    }, 1000);
+function hideDeleteButtons() {
+    // Hide all possible delete/clear buttons
+    const selectors = [
+        'button[title*="清空对话"]',
+        'button[aria-label*="清空对话"]',
+        'button[name*="清空对话"]',
+        'button:contains("清空对话")',
+        '*[role="button"][title*="清空对话"]',
+        '*[role="button"][aria-label*="清空对话"]',
+        '*[role="button"]:contains("清空对话")',
+        'button:has-text("清空对话")',
+        '*[role="button"]:has-text("清空对话")',
+        '.clear-button',
+        '.delete-button',
+        '.remove-button',
+        'button[data-action*="clear"]',
+        'button[data-action*="delete"]',
+        'button[data-action*="remove"]',
+        'div button[title*="清空对话"]',
+        'div button[aria-label*="清空对话"]',
+        'div button:contains("清空对话")'
+    ];
     
-    // Input box state management
-    setTimeout(function() {
-        const inputBox = document.getElementById('input_box');
-        const sendBtn = document.querySelector('button[value="发送"]');
-        
-        if (inputBox) {
-            // Add ready-for-input class by default
-            inputBox.classList.add('ready-for-input');
-            
-            // Monitor for form submission or send button click
-            const handleSending = function() {
-                inputBox.classList.remove('ready-for-input');
-                inputBox.classList.add('sending');
-            };
-            
-            // Monitor for when input is ready again
-            const handleReady = function() {
-                setTimeout(function() {
-                    inputBox.classList.remove('sending');
-                    inputBox.classList.add('ready-for-input');
-                }, 1000); // Small delay to show the sending state
-            };
-            
-            // Listen for form submission
-            const form = inputBox.closest('form');
-            if (form) {
-                form.addEventListener('submit', handleSending);
-            }
-            
-            // Listen for send button click
-            if (sendBtn) {
-                sendBtn.addEventListener('click', handleSending);
-            }
-            
-            // Listen for Enter key press
-            inputBox.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    handleSending();
-                }
+    // Apply to all matching elements
+    selectors.forEach(selector => {
+        try {
+            document.querySelectorAll(selector).forEach(element => {
+                element.style.display = 'none';
+                element.style.visibility = 'hidden';
+                element.style.opacity = '0';
+                element.style.pointerEvents = 'none';
+                element.style.width = '0';
+                element.style.height = '0';
+                element.style.padding = '0';
+                element.style.margin = '0';
+                element.style.border = 'none';
+                element.style.background = 'none';
+                element.style.position = 'absolute';
+                element.style.left = '-9999px';
+                element.style.top = '-9999px';
+                element.style.zIndex = '-9999';
             });
-            
-            // Monitor for chatbot updates (when response is received)
-            const chatbot = document.getElementById('chatbot');
-            if (chatbot) {
-                const observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                            // Check if new content was added to chatbot
-                            handleReady();
-                        }
-                    });
-                });
-                observer.observe(chatbot, { childList: true, subtree: true });
-            }
-            
-            // Also monitor for input value changes (when input is cleared)
-            const inputObserver = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
-                        if (inputBox.value === '') {
-                            handleReady();
-                        }
-                    }
-                });
-            });
-            inputObserver.observe(inputBox, { attributes: true });
+        } catch (e) {
+            // Ignore selector errors
         }
-    }, 1500);
+    });
+    
+    // Also hide by text content
+    document.querySelectorAll('button').forEach(btn => {
+        if (btn.textContent && btn.textContent.includes('清空对话')) {
+            btn.style.display = 'none';
+            btn.style.visibility = 'hidden';
+            btn.style.opacity = '0';
+            btn.style.pointerEvents = 'none';
+        }
+    });
+}
+
+function hideCopyButtons() {
+    // Hide all possible copy buttons
+    const copySelectors = [
+        'button[title*="Copy"]',
+        'button[aria-label*="Copy"]',
+        'button[title*="复制"]',
+        'button[aria-label*="复制"]',
+        'button[title*="Copy message"]',
+        'button[aria-label*="Copy message"]',
+        'button[title*="复制消息"]',
+        'button[aria-label*="复制消息"]',
+        '.copy-button',
+        'button[data-testid*="copy"]',
+        'button:has(svg[data-testid*="copy"])',
+        'button:has(svg[class*="copy"])',
+        '.chatbot button[title*="Copy"]',
+        '.chatbot button[aria-label*="Copy"]',
+        'div[data-testid="chatbot"] button[title*="Copy"]',
+        'div[data-testid="chatbot"] button[aria-label*="Copy"]'
+    ];
+    
+    // Apply to all matching elements
+    copySelectors.forEach(selector => {
+        try {
+            document.querySelectorAll(selector).forEach(element => {
+                element.style.display = 'none !important';
+                element.style.visibility = 'hidden !important';
+                element.style.opacity = '0 !important';
+                element.style.pointerEvents = 'none !important';
+                element.style.width = '0 !important';
+                element.style.height = '0 !important';
+                element.style.padding = '0 !important';
+                element.style.margin = '0 !important';
+                element.style.border = 'none !important';
+                element.style.background = 'none !important';
+                element.style.position = 'absolute !important';
+                element.style.left = '-9999px !important';
+                element.style.top = '-9999px !important';
+                element.style.zIndex = '-9999 !important';
+                element.remove(); // 直接删除元素
+            });
+        } catch (e) {
+            // Ignore selector errors
+        }
+    });
+    
+    // Also hide by text content
+    document.querySelectorAll('button').forEach(btn => {
+        if (btn.textContent && (btn.textContent.includes('Copy') || btn.textContent.includes('复制'))) {
+            btn.style.display = 'none !important';
+            btn.style.visibility = 'hidden !important';
+            btn.style.opacity = '0 !important';
+            btn.style.pointerEvents = 'none !important';
+            btn.remove(); // 直接删除元素
+        }
+    });
+}
+
+// Run immediately and on DOM changes
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        hideDeleteButtons();
+        hideCopyButtons();
+    });
+} else {
+    hideDeleteButtons();
+    hideCopyButtons();
+}
+
+// Also run periodically to catch dynamically added buttons
+setInterval(function() {
+    hideDeleteButtons();
+    hideCopyButtons();
+}, 1000);
+
+// Watch for DOM changes
+const observer = new MutationObserver(function() {
+    hideDeleteButtons();
+    hideCopyButtons();
 });
-</script>
+observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['style', 'class']
+});
 """
 
 
@@ -1294,7 +1563,7 @@ def build_single_model_ui(models, add_promotion_links=False):
             elem_id="chatbot",
             label="Scroll down and start chatting",
             height=650,
-            show_copy_button=True,
+            show_copy_button=False,
             latex_delimiters=[
                 {"left": "$", "right": "$", "display": False},
                 {"left": "$$", "right": "$$", "display": True},
@@ -1316,7 +1585,7 @@ def build_single_model_ui(models, add_promotion_links=False):
         downvote_btn = gr.Button(value="👎  踩", interactive=False, visible=False)
         flag_btn = gr.Button(value="⚠️  举报", interactive=False, visible=False)
         regenerate_btn = gr.Button(value="🔄  重新生成", interactive=False, elem_id="regenerate_btn")
-        clear_btn = gr.Button(value="🗑️  清除历史", interactive=False, elem_id="clear_btn")
+        clear_btn = gr.Button(value="🗑️  清除历史", interactive=False, elem_id="clear_btn", visible=False, elem_classes=["hidden-clear-btn"])
 
     with gr.Accordion("Parameters", open=False, visible=False) as parameter_row:
         temperature = gr.Slider(
@@ -1339,7 +1608,7 @@ def build_single_model_ui(models, add_promotion_links=False):
             minimum=16,
             maximum=2048,
             value=1024,
-            step=64,
+            step=54,
             interactive=True,
             label="最大输出长度",
         )
@@ -1409,7 +1678,7 @@ def build_demo(models):
             panel_border_color="*neutral_700",
         ),
         css=block_css,
-        head=dark_mode_js,
+        head=f"<script>{dark_mode_js}</script>",
     ) as demo:
         url_params = gr.JSON(visible=False)
 
@@ -1423,6 +1692,15 @@ def build_demo(models):
         else:
             load_js = get_window_url_params_js
 
+        # Combine the original load_js with our button hiding JavaScript
+        combined_js = f"""
+        {load_js}
+        // Hide delete buttons after page load
+        setTimeout(function() {{
+            {dark_mode_js}
+        }}, 500);
+        """
+
         demo.load(
             load_demo,
             [url_params],
@@ -1430,7 +1708,7 @@ def build_demo(models):
                 state,
                 model_selector,
             ],
-            js=load_js,
+            js=combined_js,
         )
 
     return demo
